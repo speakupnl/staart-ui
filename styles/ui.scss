@@ -1,0 +1,429 @@
+@import "variables";
+
+html {
+  background-color: $background-color;
+  color: $text-color;
+}
+
+h1 {
+  margin: 0 0 2rem 0;
+  font-size: 150%;
+}
+h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 125%;
+}
+h3 {
+  margin: 0 0 1rem 0;
+  font-size: 115%;
+}
+h1,
+h2 {
+  line-height: 1.25;
+  + p {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    + p {
+      margin-top: -1rem;
+    }
+  }
+}
+
+form,
+div,
+section,
+table,
+p,
+input,
+button,
+nav {
+  + h1,
+  + h2 {
+    margin-top: 2.5rem;
+  }
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus, &:active {
+    outline: 0;
+    border-radius: 0.2rem;
+    box-shadow: rgba($button-background-color, 0.46) 0px 0px 0px 1px,
+      rgba($color-black, 0.42) 0px 1px 1px 0px,
+      rgba($button-background-color, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($button-background-color, 0.25);
+  }
+}
+
+code {
+  font-size: 110%;
+  background-color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.2rem;
+  box-shadow: 0 3px 6px 0 rgba($color-black, 0.035);
+}
+
+.section--bg-white {
+  background-color: #fff;
+}
+
+.button {
+  font: inherit;
+  transition: 0.2s;
+  border-radius: 0.2rem;
+  border: none;
+  background: $button-background-color;
+  color: $button-text-color;
+  box-shadow: rgba($color-primary, 0.16) 0px 0px 0px 1px,
+    rgba($color-primary, 0.12) 0px 1px 1px 0px, rgba($color-primary, 0.12) 0px 2px 5px 0px;
+  &:hover, &.button--state-hover {
+    box-shadow: rgba($color-primary, 0.2) 0px 0px 0px 1px,
+      rgba($color-primary, 0.2) 0px 1px 1px 0px, rgba($color-primary, 0.2) 0px 2px 5px 0px;
+  }
+  &:focus, &:active,
+  &.button--state-focus, &.button--state-active {
+    box-shadow: rgba($color-primary, 0.46) 0px 0px 0px 1px,
+      rgba($color-primary, 0.42) 0px 1px 1px 0px,
+      rgba($color-primary, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($color-primary, 0.25);
+  }
+  &.button--state-cta,
+  &.button--color-primary {
+    background: $color-primary !important;
+    color: $color-white !important;
+  }
+  line-height: 1;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  outline: none;
+  &:hover {
+    text-decoration: none;
+  }
+  &[disabled] {
+    opacity: 0.5;
+    background-color: $button-disabled-background-color;
+  }
+  span + .icon {
+    margin-left: 0.5rem;
+  }
+}
+.button--type-list {
+  margin: 0 0 1rem 0;
+  + .button--type-list {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.button--size-large {
+  font-size: 120%;
+  padding: 1rem 1.25rem;
+}
+.button--width-full {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.button.button--color-danger {
+  background: rgba($color-red, 0.01) !important;
+  color: $color-red !important;
+  box-shadow: rgba($color-red, 0.16) 0px 0px 0px 1px,
+    rgba($color-red, 0.12) 0px 1px 1px 0px, rgba($color-red, 0.12) 0px 2px 5px 0px;
+  &:hover, &.button--state-hover {
+    box-shadow: rgba($color-red, 0.2) 0px 0px 0px 2px,
+      rgba($color-red, 0.2) 0px 2px 1px 0px, rgba($color-red, 0.2) 0px 2px 5px 0px;
+  }
+  &:focus, &:active,
+  &.button--state-focus, &.button--state-active {
+    box-shadow: rgba($color-red, 0.46) 0px 0px 0px 1px,
+      rgba($color-red, 0.42) 0px 1px 1px 0px,
+      rgba($color-red, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($color-red, 0.25);
+  }
+  &.button--state-cta {
+    background: $color-red !important;
+    color: $color-white !important;
+  }
+}
+.button.button--color-success {
+  background: rgba($color-green, 0.01) !important;
+  color: $color-green !important;
+  box-shadow: rgba($color-green, 0.16) 0px 0px 0px 1px,
+    rgba($color-green, 0.12) 0px 1px 1px 0px, rgba($color-green, 0.12) 0px 2px 5px 0px;
+  &:hover, &.button--state-hover {
+    box-shadow: rgba($color-green, 0.2) 0px 0px 0px 2px,
+      rgba($color-green, 0.2) 0px 2px 1px 0px, rgba($color-green, 0.2) 0px 2px 5px 0px;
+  }
+  &:focus, &:active,
+  &.button--state-focus, &.button--state-active {
+    box-shadow: rgba($color-green, 0.46) 0px 0px 0px 1px,
+      rgba($color-green, 0.42) 0px 1px 1px 0px,
+      rgba($color-green, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($color-green, 0.25);
+  }
+  &.button--state-cta {
+    background: $color-green !important;
+    color: $color-white !important;
+  }
+}
+.button.button--color-info {
+  background: rgba($color-blue, 0.01) !important;
+  color: $color-blue !important;
+  box-shadow: rgba($color-blue, 0.16) 0px 0px 0px 1px,
+    rgba($color-blue, 0.12) 0px 1px 1px 0px, rgba($color-blue, 0.12) 0px 2px 5px 0px;
+  &:hover, &.button--state-hover {
+    box-shadow: rgba($color-blue, 0.2) 0px 0px 0px 2px,
+      rgba($color-blue, 0.2) 0px 2px 1px 0px, rgba($color-blue, 0.2) 0px 2px 5px 0px;
+  }
+  &:focus, &:active,
+  &.button--state-focus, &.button--state-active {
+    box-shadow: rgba($color-blue, 0.46) 0px 0px 0px 1px,
+      rgba($color-blue, 0.42) 0px 1px 1px 0px,
+      rgba($color-blue, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($color-blue, 0.25);
+  }
+  &.button--state-cta {
+    background: $color-blue !important;
+    color: $color-white !important;
+  }
+}
+.button.button--color-warning {
+  background: rgba($color-orange, 0.01) !important;
+  color: $color-orange !important;
+  box-shadow: rgba($color-orange, 0.16) 0px 0px 0px 1px,
+    rgba($color-orange, 0.12) 0px 1px 1px 0px, rgba($color-orange, 0.12) 0px 2px 5px 0px;
+  &:hover, &.button--state-hover {
+    box-shadow: rgba($color-orange, 0.2) 0px 0px 0px 2px,
+      rgba($color-orange, 0.2) 0px 2px 1px 0px, rgba($color-orange, 0.2) 0px 2px 5px 0px;
+  }
+  &:focus, &:active,
+  &.button--state-focus, &.button--state-active {
+    box-shadow: rgba($color-orange, 0.46) 0px 0px 0px 1px,
+      rgba($color-orange, 0.42) 0px 1px 1px 0px,
+      rgba($color-orange, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($color-orange, 0.25);
+  }
+  &.button--state-cta {
+    background: $color-orange !important;
+    color: $color-white !important;
+  }
+}
+
+.button--type-icon {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.button--type-back {
+  display: inline-block;
+  + h1, + h2 {
+    display: inline-block;
+    margin-top: 0;
+    margin-left: 1rem;
+  }
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  td,
+  th {
+    vertical-align: middle;
+    padding: 0.75rem 1rem;
+    .button {
+      margin: -0.75rem 0;
+    }
+    .button + .button {
+      margin-left: 0.5rem;
+    }
+  }
+  th {
+    border-bottom: 2px solid rgba(180, 0, 240, 0.04);
+  }
+  tr:nth-child(even) {
+    background-color: rgba(180, 0, 240, 0.04);
+  }
+  &.table--type-cols {
+    td:first-child {
+      font-weight: bold;
+    }
+    td:last-child {
+      text-align: right;
+    }
+  }
+  + .pagination {
+    margin-top: 1rem;
+  }
+}
+
+.card {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 0.2rem;
+  box-shadow: 0 7px 14px 0 rgba(60, 66, 87, 0.075),
+    0 3px 6px 0 rgba($color-black, 0.035);
+  &.card--type-padded {
+    padding: 2rem;
+  }
+  &.card--type-invisible {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.hero {
+  max-width: 550px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  &.hero--align-center {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  h1 {
+    font-size: 200%;
+    font-weight: normal;
+  }
+}
+
+.vue-notification.notification {
+  font-size: inherit;
+  margin: 3rem 0 0 0;
+  color: #fff;
+  background: none;
+  border-left: none;
+  text-align: center;
+  .notification-content {
+    display: inline-block;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 1;
+    background-color: #35495e;
+    padding: 0.5rem 1rem;
+    border-radius: 20rem;
+    cursor: pointer;
+    &::after {
+      content: "×";
+      font-weight: bold;
+      display: inline-block;
+      transform: translateY(-0.1rem) scale(1.25);
+      margin-left: 0.75rem;
+    }
+  }
+  .notification-title {
+    display: none;
+  }
+}
+.vue-notification.notification--color-danger .notification-content {
+  background-color: #c0392b;
+}
+.vue-notification.notification--color-success .notification-content {
+  background-color: #27ae60;
+}
+
+[data-balloon-pos]::after {
+  border-radius: 0.2rem;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-size: 90%;
+}
+
+.modal-front .button {
+  margin-right: 0.5rem;
+}
+
+.label {
+  background-color: #eee;
+  color: #000;
+  text-transform: uppercase;
+  font-size: 75%;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  display: inline-block;
+  line-height: 1;
+  margin-top: -0.2rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+}
+
+input[type="radio"] {
+  display: none;
+}
+input[type="radio"] + .fake-radio {
+  background-color: #fff;
+  border-radius: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -0.2rem;
+  width: 1.25rem;
+  position: relative;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  outline: none;
+  box-shadow: rgba(42, 47, 69, 0.16) 0px 0px 0px 1px,
+    rgba($color-black, 0.12) 0px 1px 1px 0px, rgba(42, 47, 69, 0.12) 0px 2px 5px 0px;
+  &:focus, &:active {
+    box-shadow: rgba($button-background-color, 0.46) 0px 0px 0px 1px,
+      rgba($color-black, 0.42) 0px 1px 1px 0px,
+      rgba($button-background-color, 0.42) 0px 2px 5px 0px, 0 0 0 3px rgba($button-background-color, 0.25);
+  }
+}
+.fake-radio-container {
+  display: block;
+  margin-bottom: 2rem;
+  + .fake-radio-container {
+    margin-top: -1rem;
+  }
+}
+input[type="radio"]:checked + .fake-radio {
+  background-color: $link-color;
+  &::after {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: #fff;
+    position: absolute;
+    transform: scale(0.5);
+    left: 0.25rem;
+    top: 0.25rem;
+    border-radius: 100%;
+  }
+}
+
+.label-help {
+  background-color: rgba($color-black, 0.5);
+  display: inline-block;
+  font-size: 85%;
+  color: #fff;
+  border-radius: 100%;
+  font-weight: bold;
+  width: 1rem;
+  height: 1rem;
+  line-height: 1rem;
+  text-align: center;
+  margin-top: -0.2rem;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  &::after {
+    font-weight: normal !important;
+    font-size: 100% !important;
+  }
+  &:hover {
+    text-decoration: none;
+  }
+}
