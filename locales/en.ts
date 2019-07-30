@@ -1,6 +1,6 @@
 export default {
   errors: {
-    "user-not-found": "We couldn't find a user with this email",
+    "user-not-found": "We couldn't find this user",
     "missing-field": "Make sure you've entered all required fields",
     "unverified-email": "This email has not been verified yet",
     "invalid-login": "This is an incorrect email/password combination",
@@ -28,7 +28,13 @@ export default {
       "You don't have the permission to perform this action",
     "user-is-member-already": "This user is already a member",
     "invalid-2fa-token": "This 2FA verification code is incorrect",
-    "oauth-no-email": "We couldn't find an account with that email"
+    "oauth-no-email": "We couldn't find an account with that email",
+    "domain-missing-file": "We couldn't find the verification file",
+    "domain-missing-dns": "We didn't find the DNS record",
+    "domain-already-verified": "This domain is already verified",
+    "cannot-invite-domain": "You cannot invite a member from this domain",
+    "username-exists": "This username is already claimed",
+    "cannot-delete-email": "This email cannot be deleted"
   },
   securityEvents: {
     "user.created": "Created account",
@@ -75,7 +81,8 @@ export default {
     "billing-subscription-updated": "Your subscription has been updated",
     "billing-source-created": "Your payment method has been created",
     "billing-source-updated": "Your payment method has been updated",
-    "billing-source-deleted": "Your payment method has been deleted"
+    "billing-source-deleted": "Your payment method has been deleted",
+    "domain-unable-to-verify": "We weren't able to verify your domain"
   },
   membershipRoles: {
     1: "Owner",
@@ -84,30 +91,109 @@ export default {
     4: "Member",
     5: "Basic"
   },
-  apiRestrictions: {
+  scopes: {
     orgRead: {
-      intro: "Read team details",
-      help: "Get information about your team, subscription, and settings",
-      alwaysChecked: true
+      text: "Read team details",
+      help: "Get information about your team, subscription, and settings"
     },
     orgUpdate: {
-      intro: "Update team details",
+      text: "Update team details",
       help: "Update information about your team, billing, etc."
     }
   },
+  webhooks: {
+    "*": "All events",
+    "update-organization": "Update team settings",
+    "delete-organization": "Delete team",
+    "update-organization-billing": "Update billing details",
+    "update-organization-subscription": "Update subscription",
+    "create-organization-subscription": "Create a subscription",
+    "delete-organization-source": "Delete a payment method",
+    "update-organization-source": "Update a payment method",
+    "create-organization-source": "Create a payment method",
+    "update-api-key": "Update an API key",
+    "create-api-key": "Create an API key",
+    "delete-api-key": "Delete an API key",
+    "update-domain": "Update a domain",
+    "create-domain": "Create a domain",
+    "delete-domain": "Delete a domain",
+    "verify-domain": "Verify a domain",
+    "update-webhook": "Update a webhook",
+    "create-webhook": "Create a webhook",
+    "delete-webhook": "Delete a webhook"
+  },
+  userScopes: {
+    "user:read": {
+      text: "Read basic user profile"
+    },
+    "user:update": {
+      text: "Update user profile"
+    },
+    "user:emails:create": {
+      text: "Add an email address"
+    },
+    "user:emails:read": {
+      text: "Read email addresses"
+    },
+    "user:emails:delete": {
+      text: "Delete an email address"
+    },
+    "user:emails:resend-verification": {
+      text: "Resend email verification"
+    },
+    "user:change-password": {
+      text: "Change user password"
+    },
+    "user:delete": {
+      text: "Delete user account"
+    },
+    "user:memberships:read": {
+      text: "Read team memberships"
+    },
+    "user:2fa:enable": {
+      text: "Enable two-factor authentication"
+    },
+    "user:2fa:disable": {
+      text: "Disable two-factor authentication"
+    },
+    "user:backup-codes:read": {
+      text: "Read 2FA backup codes"
+    },
+    "user:backup-codes:regenerate": {
+      text: "Regenerate 2FA backup codes"
+    },
+    "user:access-tokens:create": {
+      text: "Create new access tokens"
+    },
+    "user:access-tokens:read": {
+      text: "Read access tokens"
+    },
+    "user:access-tokens:update": {
+      text: "Update access tokens"
+    },
+    "user:access-tokens:delete": {
+      text: "Delete access tokens"
+    }
+  },
   months: {
-    1: "January",
-    2: "February",
-    3: "March",
-    4: "April",
-    5: "May",
-    6: "June",
-    7: "July",
-    8: "August",
-    9: "September",
-    10: "October",
-    11: "November",
-    12: "December"
+    1: "January (01)",
+    2: "February (02)",
+    3: "March (03)",
+    4: "April (04)",
+    5: "May (05)",
+    6: "June (06)",
+    7: "July (07)",
+    8: "August (08)",
+    9: "September (09)",
+    10: "October (10)",
+    11: "November (11)",
+    12: "December (12)"
+  },
+  genders: {
+    m: "Male (he/him)",
+    f: "Female (she/her)",
+    n: "Non-binary (them/their)",
+    x: "Prefer not to say (them/their)"
   },
   buttons: {
     getStarted: "Get started for free →",
@@ -117,12 +203,14 @@ export default {
     index: {
       hero: {
         title: "Staart is a SaaS starter for your next big idea.",
-        intro: "Written in TypeScript and Vue, Staart gives you a 6-month headstart in building your SaaS product. Free and open-source."
+        intro:
+          "Written in TypeScript and Vue, Staart gives you a 6-month headstart in building your SaaS product. Free and open-source."
       },
       features: {
         1: {
           title: "SaaS Billing",
-          intro: "Subscriptions, credit cards, invoices, and more, powered by Stripe"
+          intro:
+            "Subscriptions, credit cards, invoices, and more, powered by Stripe"
         },
         2: {
           title: "Teams",
@@ -130,11 +218,13 @@ export default {
         },
         3: {
           title: "Platform",
-          intro: "Authentication, scoped API keys, and more ways to use your SaaS"
+          intro:
+            "Authentication, scoped API keys, and more ways to use your SaaS"
         },
         4: {
           title: "Full-stack",
-          intro: "Node.js backend written in TypeScript with a beautiful Vue PWA."
+          intro:
+            "Node.js backend written in TypeScript with a beautiful Vue PWA."
         }
       },
       lists: {
@@ -144,7 +234,8 @@ export default {
           link: "Staart on GitHub →",
           1: {
             title: "Controller-driven",
-            intro: "Auto route generation with redirects and static file support."
+            intro:
+              "Auto route generation with redirects and static file support."
           },
           2: {
             title: "OAuth2 client",
@@ -164,12 +255,13 @@ export default {
           },
           6: {
             title: "Secure endpoints",
-            intro: "Rate limiting, brute force prevention, and IP/CIDR whitelisting."
+            intro:
+              "Rate limiting, brute force prevention, and IP/CIDR whitelisting."
           },
           7: {
             title: "Modern toolkit",
             intro: "Powerful middleware, error handling, async functions."
-          },
+          }
         },
         2: {
           title: "Vue.js/Nuxt.js Frontend",
@@ -200,8 +292,9 @@ export default {
           },
           7: {
             title: "Deploy anywhere",
-            intro: "Works perfectly on Netlify, Firebase, Surge, and GitHub pages."
-          },
+            intro:
+              "Works perfectly on Netlify, Firebase, Surge, and GitHub pages."
+          }
         }
       },
       logos: {
@@ -212,16 +305,19 @@ export default {
         },
         2: {
           title: "Ara Assistant",
-          intro: "AI-powered assistant for businesses and professionals from O15Y"
+          intro:
+            "AI-powered assistant for businesses and professionals from O15Y"
         },
         3: {
           title: "Dai11y",
-          intro: "Automated daily accessibility audits to find issues in your sites"
+          intro:
+            "Automated daily accessibility audits to find issues in your sites"
         },
         4: {
           title: "Glimage",
-          intro: "Global CDN for delivering super-fast, optimized images to your sites"
-        },
+          intro:
+            "Global CDN for delivering super-fast, optimized images to your sites"
+        }
       }
     }
   }

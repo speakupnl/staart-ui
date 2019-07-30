@@ -331,6 +331,7 @@
         autocomplete="name"
       />
       <Checkbox type="text" label="Yes, I have a name and this is my name" />
+      <DatePicker label="Birthday" />
       <CheckList
         label="CheckList component has multiple selects"
         :options="{
@@ -342,6 +343,11 @@
       <CommaList
         label="CommaList component converts this to a comma-separated string"
         placeholder="Enter an IP address or CIDR, e.g., 192.168.1.1/42"
+      />
+      <Autocomplete
+        label="Country"
+        :options="countries"
+        placeholder="Select your country"
       />
     </div>
     <transition name="modal">
@@ -386,11 +392,14 @@ import {
   faVuejs,
   faAccessibleIcon
 } from "@fortawesome/free-brands-svg-icons";
+import { getAllCountries } from "countries-and-timezones";
+import Autocomplete from "@/components/form/Autocomplete.vue";
 import Confirm from "@/components/Confirm.vue";
 import Select from "@/components/form/Select.vue";
 import CommaList from "@/components/form/CommaList.vue";
 import CheckList from "@/components/form/CheckList.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
+import DatePicker from "@/components/form/DatePicker.vue";
 import Input from "@/components/form/Input.vue";
 library.add(
   faSync,
@@ -408,6 +417,17 @@ library.add(
   faAccessibleIcon,
   faRocket
 );
+const countries = {};
+const allCountries = getAllCountries();
+for (const country in allCountries) {
+  if (allCountries.hasOwnProperty(country)) {
+    const cc = country.toLowerCase();
+    countries[cc] = {
+      value: allCountries[country].name
+      // img: `https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.3.0/flags/1x1/${cc}.svg`
+    };
+  }
+}
 
 @Component({
   computed: mapGetters({
@@ -420,12 +440,15 @@ library.add(
     CommaList,
     Checkbox,
     CheckList,
-    Select
+    Select,
+    Autocomplete,
+    DatePicker
   }
 })
 export default class StyleGuide extends Vue {
   showConfirm = false;
   name = "Anand Chowdhary";
+  countries = countries;
 }
 </script>
 

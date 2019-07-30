@@ -22,29 +22,37 @@
     <form v-else v-meta-ctrl-enter="save" @submit.prevent="save">
       <Input
         :value="organization.name"
-        label="Name"
+        label="Team name"
         placeholder="Enter your organization's name"
         required
         @input="val => (organization.name = val)"
       />
       <Input
         :value="organization.username"
-        label="Username"
+        label="Team username"
         placeholder="Enter a unique username"
         help="Changing your username can have unintended side effects"
         @input="val => (organization.username = val)"
       />
-      <Input
-        :value="organization.invitationDomain"
-        label="Email domain"
-        placeholder="Enter your company's domain, eg. oswaldlabs.com"
-        help="We'll allow people with emails from this domain to join this organization automatically"
-        @input="val => (organization.invitationDomain = val)"
+      <Checkbox
+        :value="organization.autoJoinDomain"
+        label="Allow users with verified domain emails to automatically join this team"
+        help="You can set up verified domains below to make it easy for your team to join"
+        :question-mark="true"
+        @input="val => (organization.autoJoinDomain = val)"
+      />
+      <Checkbox
+        :value="organization.onlyAllowDomain"
+        label="Only allow users with verified domain emails to join this team"
+        help="We won't let managers invite users with emails from other domains"
+        :question-mark="true"
+        @input="val => (organization.onlyAllowDomain = val)"
       />
       <button class="button">
         Update settings
       </button>
     </form>
+    <Domains style="margin-top: 2rem" />
   </main>
 </template>
 
@@ -60,6 +68,7 @@ import Input from "@/components/form/Input.vue";
 import Select from "@/components/form/Select.vue";
 import ImageInput from "@/components/form/Image.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
+import Domains from "@/components/team/Domains.vue";
 import { User } from "@/types/auth";
 import {
   OrganizationsKV,
@@ -72,6 +81,7 @@ library.add(faSync);
   components: {
     Loading,
     Input,
+    Domains,
     FontAwesomeIcon,
     Select,
     ImageInput,
@@ -111,7 +121,8 @@ export default class ManageSettings extends Vue {
         team: this.$route.params.team,
         ...this.organization
       })
-      .then(() => {
+      .then(org => {
+        this.organization = { ...org };
         this.$router.replace(`/manage/${this.organization.username}/settings`);
       })
       .catch(() => {})

@@ -38,16 +38,11 @@
             <router-link
               v-if="user && member.userId !== user.id"
               :to="`/manage/${$route.params.team}/members/${member.id}`"
-              aria-label="Edit"
+              aria-label="Edit membership"
               data-balloon-pos="up"
               class="button button--type-icon"
             >
-              <font-awesome-icon
-                title="Edit"
-                class="icon"
-                icon="pencil-alt"
-                fixed-width
-              />
+              <font-awesome-icon class="icon" icon="pencil-alt" fixed-width />
             </router-link>
             <button
               v-if="user && member.userId !== user.id"
@@ -88,7 +83,7 @@
     <p>
       Use this form to invite another user from your team to this organization.
     </p>
-    <Loading v-if="inviting" />
+    <Loading v-if="inviting" message="Inviting member" />
     <form
       v-else
       v-meta-ctrl-enter="inviteMember"
@@ -132,7 +127,7 @@
           deleted.
         </p>
         <button
-          class="button button--color-danger-cta"
+          class="button button--color-danger button--state-cta"
           @click="deleteMembership(showDelete.id)"
         >
           Yes, remove {{ showDelete.user.nickname }}

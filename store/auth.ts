@@ -15,7 +15,8 @@ export const state = (): RootState => ({
 
 export const mutations: MutationTree<RootState> = {
   setAuthentication(state: RootState, tokens: Tokens) {
-    Vue.set(state, "tokens", tokens);
+    const currentTokens = state.tokens;
+    Vue.set(state, "tokens", { ...currentTokens, ...tokens });
     Vue.set(state, "user", decode(tokens.token));
     state.loading = false;
     state.isAuthenticated = true;
@@ -56,17 +57,20 @@ export const actions: ActionTree<RootState, RootState> = {
       commit("setAuthentication", tokens);
     }
   },
-  async loginWithEmailPassword({ commit }, context) {
+  loginWithTokens({ commit }, tokens) {
+    if (tokens.twoFactorToken) {
+      commit("set2FA", tokens.twoFactorToken);
+      return "2fa";
+    } else {
+      this.$axios.setToken(tokens.token, "Bearer");
+      commit("setAuthentication", tokens);
+    }
+  },
+  async loginWithEmailPassword({ commit, dispatch }, context) {
     commit("startLoading");
     try {
       const tokens = (await this.$axios.post("/auth/login", context)).data;
-      if (tokens.twoFactorToken) {
-        commit("set2FA", tokens.twoFactorToken);
-        return "2fa";
-      } else {
-        this.$axios.setToken(tokens.token, "Bearer");
-        commit("setAuthentication", tokens);
-      }
+      dispatch("loginWithTokens", tokens);
     } catch (error) {
       commit("stopLoading");
       throw new Error(error);
@@ -95,23 +99,7 @@ export const actions: ActionTree<RootState, RootState> = {
       })).data;
       this.$axios.setToken(tokens.token, "Bearer");
       commit("setAuthentication", tokens);
-    } catch (error) {
-      commit("stopLoading");
-      throw new Error(error);
-    }
-  },
-  async loginWithGoogle({ commit }, context) {
-    commit("startLoading");
-    try {
-      const tokens = (await this.$axios.post("/auth/google/verify", context))
-        .data;
-      if (tokens.twoFactorToken) {
-        commit("set2FA", tokens.twoFactorToken);
-        return "2fa";
-      } else {
-        this.$axios.setToken(tokens.token, "Bearer");
-        commit("setAuthentication", tokens);
-      }
+      return tokens.token;
     } catch (error) {
       commit("stopLoading");
       throw new Error(error);
@@ -148,8 +136,10 @@ export const actions: ActionTree<RootState, RootState> = {
     commit("removeAuthentication");
     commit("settings/clearAll", undefined, { root: true });
     commit("manage/clearAll", undefined, { root: true });
-    document.documentElement.classList.remove("prefers-reduced-motion");
-    document.documentElement.classList.remove("prefers-color-scheme-dark");
+    if (process.client) {
+      document.documentElement.classList.remove("prefers-reduced-motion");
+      document.documentElement.classList.remove("prefers-color-scheme-dark");
+    }
   },
   async getNotifications({ commit, state }) {
     const notifications = (await this.$axios.get(`/users/me/notifications`))

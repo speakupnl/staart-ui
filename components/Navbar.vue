@@ -5,11 +5,7 @@
         <img alt="" src="/android-chrome-72x72.png" />
         <span>Staart</span>
       </nuxt-link>
-      <nav
-        v-if="isAuthenticated"
-        :class="{ 'nav--visible-true': showNav }"
-        @click="showNav = false"
-      >
+      <nav v-if="isAuthenticated" :class="{ 'nav--visible-true': showNav }">
         <nuxt-link
           v-if="activeOrganization && activeOrganization !== 'undefined'"
           class="item"
@@ -17,7 +13,10 @@
           >Dashboard</nuxt-link
         >
         <nuxt-link v-else class="item" to="/dashboard">Dashboard</nuxt-link>
-        <nuxt-link class="item" :to="`/manage/${activeOrganization}/settings`"
+        <nuxt-link
+          v-if="activeOrganization && activeOrganization !== 'undefined'"
+          class="item"
+          :to="`/manage/${activeOrganization}/settings`"
           >Settings</nuxt-link
         >
         <span>
@@ -42,7 +41,7 @@
               ref="dropdown-help"
               class="dropdown"
             >
-              <nuxt-link class="item" to="/settings">Feedback</nuxt-link>
+              <button class="item" @click="feedback">Feedback</button>
               <nuxt-link class="item" to="/settings/account"
                 >Help Center</nuxt-link
               >
@@ -81,7 +80,6 @@
         <span>
           <button
             class="item item--type-user"
-            to="/settings/account"
             aria-controls="account"
             :aria-expanded="(visible === 'account').toString()"
           >
@@ -95,10 +93,14 @@
               ref="dropdown-account"
               class="dropdown"
             >
-              <nuxt-link class="item" to="/settings/account"
+              <nuxt-link
+                class="item"
+                :to="`/users/${user.username || user.id}/profile`"
                 >Settings</nuxt-link
               >
-              <nuxt-link class="item" to="/settings/organizations"
+              <nuxt-link
+                class="item"
+                :to="`/users/${user.username || user.id}/memberships`"
                 >Your teams</nuxt-link
               >
               <button class="item" @click="logout">Logout</button>
@@ -106,11 +108,7 @@
           </transition>
         </span>
       </nav>
-      <nav
-        v-else
-        :class="{ 'nav--visible-true': showNav }"
-        @click="showNav = false"
-      >
+      <nav v-else :class="{ 'nav--visible-true': showNav }">
         <nuxt-link class="item" to="/">Solutions</nuxt-link>
         <span>
           <button
@@ -171,6 +169,7 @@ import { mapGetters } from "vuex";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import Trap from "vue-focus-lock";
+// import Feeedback from "feeedback";
 import {
   faBell,
   faQuestionCircle,
@@ -179,6 +178,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Notifications from "@/components/Notifications.vue";
 library.add(faBell, faQuestionCircle, faBars, faTimes);
+// const feedback = new Feeedback({
+//   onSubmit: result =>
+//     new Promise((resolve, reject) => {
+//       if (window.agastya && typeof window.agastya.secureTrack === "function")
+//         window.agastya.secureTrack({ feedback: result });
+//       resolve();
+//     })
+// });
 
 @Component({
   computed: mapGetters({
@@ -202,6 +209,7 @@ export default class Card extends Vue {
     this.updateNavBar();
   }
   private updateNavBar() {
+    this.showNav = false;
     if (this.$route.path.startsWith("/onboarding")) {
       this.isVisible = false;
     } else {
@@ -245,6 +253,9 @@ export default class Card extends Vue {
           }
         });
       });
+  }
+  private feedback() {
+    // feedback.open();
   }
 }
 </script>

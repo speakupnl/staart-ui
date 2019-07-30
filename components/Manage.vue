@@ -1,5 +1,8 @@
 <template>
-  <div :key="`manage_${$route.params.team}`" class="container">
+  <div
+    :key="`manage_${$route.params.team}`"
+    class="container container--type-settings"
+  >
     <aside>
       <nav>
         <nuxt-link class="item" :to="`/manage/${$route.params.team}/settings`">
@@ -48,10 +51,27 @@
           <font-awesome-icon class="nav-icon" icon="database" fixed-width />
           <span>Data &amp; security</span>
         </nuxt-link>
-        <nuxt-link class="item" :to="`/manage/${$route.params.team}/api-keys`">
+        <nuxt-link
+          class="item item--type-parent"
+          :to="`/manage/${$route.params.team}/developer/api-keys`"
+        >
           <font-awesome-icon class="nav-icon" icon="code" fixed-width />
-          <span>Developer APIs</span>
+          <span>Developer</span>
         </nuxt-link>
+        <nav v-if="$route.path.includes('/developer/')" class="sub-nav">
+          <nuxt-link
+            class="sub-item"
+            :to="`/manage/${$route.params.team}/developer/api-keys`"
+          >
+            <span>API keys</span>
+          </nuxt-link>
+          <nuxt-link
+            class="sub-item"
+            :to="`/manage/${$route.params.team}/developer/webhooks`"
+          >
+            <span>Webhooks</span>
+          </nuxt-link>
+        </nav>
       </nav>
     </aside>
     <div class="card">
@@ -102,59 +122,3 @@ export default class Manage extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.container {
-  display: flex;
-}
-aside {
-  width: 300px;
-}
-aside nav {
-  position: sticky;
-  top: 1rem;
-}
-.card {
-  flex-grow: 1;
-  padding: 2rem;
-}
-.nav-heading {
-  font-weight: bold;
-  margin: 1rem 0;
-  font-size: 110%;
-}
-.nav-icon {
-  margin-right: 0.5rem;
-  opacity: 0.3;
-  transition: 0.3s;
-}
-.item {
-  transition: 0.3s;
-  display: block;
-  text-decoration: none;
-  padding: 0.7rem 0;
-  color: inherit;
-  &:hover {
-    .nav-icon {
-      opacity: 0.75;
-    }
-  }
-  &.nuxt-link-active:not(.item--type-parent) {
-    font-weight: bold;
-  }
-}
-.sub-nav {
-  margin-top: -0.5rem;
-  border-left: 0.1rem solid rgba(0, 0, 0, 0.1);
-  padding-left: 1.4rem;
-  margin-left: 0.5rem;
-}
-.sub-item {
-  display: block;
-  color: inherit;
-  margin: 0.5rem 0;
-  &.nuxt-link-active {
-    font-weight: bold;
-  }
-}
-</style>

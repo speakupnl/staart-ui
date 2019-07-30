@@ -5,6 +5,15 @@ html {
   color: $text-color;
 }
 
+ul, ol {
+  li:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+  ul, ol {
+    margin-top: 0.5rem;
+  }
+}
+
 h1 {
   margin: 0 0 2rem 0;
   font-size: 150%;
@@ -134,6 +143,10 @@ code {
 .button--size-large {
   font-size: 120%;
   padding: 1rem 1.25rem;
+}
+.button--size-small {
+  font-size: 85%;
+  padding: 0.3rem 0.5rem;
 }
 .button--width-full {
   display: block;
@@ -412,7 +425,7 @@ input[type="radio"]:checked + .fake-radio {
   color: #fff;
   border-radius: 100%;
   font-weight: bold;
-  width: 1rem;
+  width: 1rem !important;
   height: 1rem;
   line-height: 1rem;
   text-align: center;
@@ -425,5 +438,128 @@ input[type="radio"]:checked + .fake-radio {
   }
   &:hover {
     text-decoration: none;
+  }
+}
+
+.help-icon {
+  color: rgba($color-black, 0.5);
+  transform: scale(0.9);
+  margin-left: 0.1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+}
+
+.form-group input, .input {
+  font: inherit;
+  padding: 0.75rem;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: normal;
+  border-radius: 0.2rem;
+  border: 1px solid rgba($color-primary, 0.15);
+  background-color: #fff;
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0.05rem 0.1rem rgba($color-primary, 0.2);
+  }
+  &:disabled {
+    background-color: rgba($color-primary, 0.025);
+  }
+}
+
+.container--type-settings {
+  display: flex;
+  aside {
+    width: 300px;
+  }
+  aside > nav {
+    position: sticky;
+    top: 1rem;
+  }
+  @media (max-width: 900px) {
+    .container {
+      display: block;
+      padding: 0;
+      .card {
+        border-radius: 0;
+      }
+    }
+    aside {
+      margin-top: 1rem;
+      width: 100%;
+      overflow-x: auto;
+    }
+    aside > nav {
+      position: static;
+      display: flex;
+      .item,
+      .sub-item {
+        padding: 1rem;
+        margin: 0;
+        white-space: nowrap;
+      }
+      .sub-nav {
+        background-color: #fff;
+        border-top-left-radius: 0.2rem;
+        border-top-right-radius: 0.2rem;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      svg {
+        display: none;
+      }
+    }
+  }
+  .card {
+    flex-grow: 1;
+    padding: 2rem;
+  }
+  .nav-heading {
+    font-weight: bold;
+    margin: 1rem 0;
+    font-size: 110%;
+  }
+  .nav-icon {
+    margin-right: 0.5rem;
+    opacity: 0.3;
+    transition: 0.3s;
+  }
+  .item {
+    transition: 0.3s;
+    display: block;
+    text-decoration: none;
+    padding: 0.7rem 0;
+    color: inherit;
+    &:hover {
+      .nav-icon {
+        opacity: 0.75;
+      }
+    }
+    &.nuxt-link-active:not(.item--type-parent) {
+      font-weight: bold;
+    }
+  }
+  .sub-nav {
+    margin-top: -0.5rem;
+    border-left: 0.1rem solid rgba(0, 0, 0, 0.1);
+    padding-left: 1.4rem;
+    margin-left: 0.5rem;
+  }
+  .sub-item {
+    display: block;
+    color: inherit;
+    margin: 0.5rem 0;
+    &.nuxt-link-active {
+      font-weight: bold;
+    }
   }
 }

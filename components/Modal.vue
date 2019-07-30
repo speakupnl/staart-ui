@@ -1,9 +1,19 @@
 <template>
   <Trap>
     <div class="modal-back">
-      <button class="close" aria-label="Close" @click="close">&times;</button>
+      <button
+        v-if="!disableBackgroundClose"
+        class="close"
+        aria-label="Close"
+        @click="close"
+      >
+        &times;
+      </button>
       <div class="card card--type-padded modal-front">
         <slot />
+        <div v-if="disableBackgroundClose">
+          <button class="button" @click="onClose">{{ closeText }}</button>
+        </div>
       </div>
       <div class="background" @click="close"></div>
     </div>
@@ -21,8 +31,10 @@ import Trap from "vue-focus-lock";
 })
 export default class Modal extends Vue {
   @Prop() onClose;
+  @Prop({ default: false }) disableBackgroundClose;
+  @Prop({ default: "Close" }) closeText;
   private close() {
-    this.onClose();
+    if (!this.disableBackgroundClose) this.onClose();
   }
 }
 </script>
@@ -48,6 +60,7 @@ export default class Modal extends Vue {
   top: 0;
   bottom: 0;
   overflow: auto;
+  z-index: 999;
   .close {
     position: fixed;
     right: 0;

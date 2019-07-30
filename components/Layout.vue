@@ -3,6 +3,9 @@
     <Settings v-if="activeRoute === 'user-settings'">
       <nuxt />
     </Settings>
+    <Users v-else-if="activeRoute === 'users'">
+      <nuxt />
+    </Users>
     <Manage v-else-if="activeRoute === 'organization-settings'">
       <nuxt />
     </Manage>
@@ -15,12 +18,14 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import Users from "@/components/Users.vue";
 import Settings from "@/components/Settings.vue";
 import Manage from "@/components/Manage.vue";
 import Policies from "@/components/Policies.vue";
 
 @Component({
   components: {
+    Users,
     Settings,
     Policies,
     Manage
@@ -36,6 +41,8 @@ export default class Layout extends Vue {
       this.activeRoute = "user-settings";
     } else if (this.$route.path.startsWith("/manage")) {
       this.activeRoute = "organization-settings";
+    } else if (this.$route.path.startsWith("/users")) {
+      this.activeRoute = "users";
     } else if (this.$route.path.startsWith("/policies")) {
       this.activeRoute = "policies";
     } else {

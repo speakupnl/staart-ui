@@ -16,7 +16,11 @@ export const state = (): RootState => ({
   sources: {},
   source: {},
   apiKeys: {},
-  apiKey: {}
+  apiKey: {},
+  domains: {},
+  domain: {},
+  webhooks: {},
+  webhook: {}
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -127,6 +131,46 @@ export const mutations: MutationTree<RootState> = {
     currentApiKeys[team][id] = { ...apiKey };
     Vue.set(state, "apiKey", currentApiKeys);
   },
+  setDomains(state: RootState, { team, domains, start, next }): void {
+    const currentDomains = state.domains;
+    currentDomains[team] = currentDomains[team] || emptyPagination;
+    if (start) {
+      currentDomains[team].data = [
+        ...currentDomains[team].data,
+        ...domains.data
+      ];
+    } else {
+      currentDomains[team].data = domains.data;
+    }
+    currentDomains[team].next = next;
+    Vue.set(state, "domains", currentDomains);
+  },
+  setDomain(state: RootState, { team, domain, id }): void {
+    const currentDomains = state.domain;
+    currentDomains[team] = currentDomains[team] || {};
+    currentDomains[team][id] = { ...domain };
+    Vue.set(state, "domain", currentDomains);
+  },
+  setWebhooks(state: RootState, { team, webhooks, start, next }): void {
+    const currentWebhooks = state.webhooks;
+    currentWebhooks[team] = currentWebhooks[team] || emptyPagination;
+    if (start) {
+      currentWebhooks[team].data = [
+        ...currentWebhooks[team].data,
+        ...webhooks.data
+      ];
+    } else {
+      currentWebhooks[team].data = webhooks.data;
+    }
+    currentWebhooks[team].next = next;
+    Vue.set(state, "webhooks", currentWebhooks);
+  },
+  setWebhook(state: RootState, { team, webhook, id }): void {
+    const currentWebhooks = state.webhook;
+    currentWebhooks[team] = currentWebhooks[team] || {};
+    currentWebhooks[team][id] = { ...webhook };
+    Vue.set(state, "webhook", currentWebhooks);
+  },
   setPricingPlans(state: RootState, pricingPlans: any): void {
     Vue.set(state, "pricingPlans", pricingPlans);
   },
@@ -134,20 +178,24 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state, "recentEvents", recentEvents);
   },
   clearAll(state: RootState): void {
-    delete state.organizations;
-    delete state.billing;
-    delete state.memberships;
+    state.organizations = {};
+    state.billing = {};
+    state.memberships = {};
     delete state.membership;
-    delete state.subscriptions;
-    delete state.subscription;
-    delete state.invoices;
-    delete state.invoice;
-    delete state.sources;
-    delete state.source;
-    delete state.recentEvents;
-    delete state.pricingPlans;
-    delete state.apiKeys;
-    delete state.apiKey;
+    state.subscriptions = {};
+    state.subscription = {};
+    state.invoices = {};
+    state.invoice = {};
+    state.sources = {};
+    state.source = {};
+    state.recentEvents = {};
+    state.pricingPlans = {};
+    state.apiKeys = {};
+    state.apiKey = {};
+    state.domains = {};
+    state.domain = {};
+    state.webhooks = {};
+    state.webhook = {};
   }
 };
 
@@ -163,7 +211,7 @@ export const actions: ActionTree<RootState, RootState> = {
     const update = { ...context };
     delete update.team;
     await this.$axios.patch(`/organizations/${context.team}`, update);
-    return dispatch("getOrganization", context.team);
+    return dispatch("getOrganization", context.username || context.team);
   },
   async deleteOrganization({ commit, rootGetters }, { team }) {
     await this.$axios.delete(`/organizations/${team}`);
@@ -344,6 +392,88 @@ export const actions: ActionTree<RootState, RootState> = {
     );
     return dispatch("getApiKey", context);
   },
+  async getDomains({ commit }, { team, start = 0 }) {
+    const domains: any = (await this.$axios.get(
+      `/organizations/${team}/domains?start=${start}`
+    )).data;
+    commit("setDomains", { team, domains, start, next: domains.next });
+    return domains;
+  },
+  async getDomain({ commit }, { team, id }) {
+    const domain: any = (await this.$axios.get(
+      `/organizations/${team}/domains/${id}`
+    )).data;
+    commit("setDomain", { team, domain, id });
+    return domain;
+  },
+  async createDomain({ dispatch }, context) {
+    const data = { ...context };
+    delete data.team;
+    await this.$axios.put(`/organizations/${context.team}/domains`, data);
+    return dispatch("getDomains", { team: context.team });
+  },
+  async deleteDomain({ dispatch }, context) {
+    await this.$axios.delete(
+      `/organizations/${context.team}/domains/${context.id}`
+    );
+    return dispatch("getDomains", { team: context.team });
+  },
+  async updateDomain({ dispatch }, context) {
+    const data = { ...context };
+    delete data.team;
+    delete data.id;
+    await this.$axios.patch(
+      `/organizations/${context.team}/domains/${context.id}`,
+      data
+    );
+    return dispatch("getDomain", context);
+  },
+  async verifyDomain({ dispatch }, context) {
+    const data = { ...context };
+    delete data.team;
+    delete data.id;
+    await this.$axios.post(
+      `/organizations/${context.team}/domains/${context.id}/verify`,
+      data
+    );
+    return dispatch("getDomain", context);
+  },
+  async getWebhooks({ commit }, { team, start = 0 }) {
+    const webhooks: any = (await this.$axios.get(
+      `/organizations/${team}/webhooks?start=${start}`
+    )).data;
+    commit("setWebhooks", { team, webhooks, start, next: webhooks.next });
+    return webhooks;
+  },
+  async getWebhook({ commit }, { team, id }) {
+    const webhook: any = (await this.$axios.get(
+      `/organizations/${team}/webhooks/${id}`
+    )).data;
+    commit("setWebhook", { team, webhook, id });
+    return webhook;
+  },
+  async createWebhook({ dispatch }, context) {
+    const data = { ...context };
+    delete data.team;
+    await this.$axios.put(`/organizations/${context.team}/webhooks`, data);
+    return dispatch("getWebhooks", { team: context.team });
+  },
+  async deleteWebhook({ dispatch }, context) {
+    await this.$axios.delete(
+      `/organizations/${context.team}/webhooks/${context.id}`
+    );
+    return dispatch("getWebhooks", { team: context.team });
+  },
+  async updateWebhook({ dispatch }, context) {
+    const data = { ...context };
+    delete data.team;
+    delete data.id;
+    await this.$axios.patch(
+      `/organizations/${context.team}/webhooks/${context.id}`,
+      data
+    );
+    return dispatch("getWebhook", context);
+  },
   async getEvents({ commit, rootGetters }) {
     const org = rootGetters["auth/activeOrganization"];
     const organizationId = org.organizationId;
@@ -359,19 +489,25 @@ export const getters: GetterTree<RootState, RootState> = {
   pricingPlans: state => state.pricingPlans,
   securityEvents: state => state.recentEvents,
   isDownloading: state => state.isDownloading,
-  memberships: state => (team: string) => state.memberships[team],
-  billing: state => (team: string) => state.billing[team],
-  subscriptions: state => (team: string) => state.subscriptions[team],
+  memberships: state => (team: string) => (state.memberships)[team],
+  billing: state => (team: string) => (state.billing)[team],
+  subscriptions: state => (team: string) => (state.subscriptions)[team],
   subscription: state => (team: string, subscriptionId: string) =>
     state.subscription[team] && state.subscription[team][subscriptionId],
-  invoices: state => (team: string) => state.invoices[team],
+  invoices: state => (team: string) => (state.invoices)[team],
   invoice: state => (team: string, invoiceId: string) =>
     state.invoice[team] && state.invoice[team][invoiceId],
-  sources: state => (team: string) => state.sources[team],
+  sources: state => (team: string) => (state.sources)[team],
   source: state => (team: string, sourceId: string) =>
     state.source[team] && state.source[team][sourceId],
-  apiKeys: state => (team: string) => state.apiKeys[team],
+  apiKeys: state => (team: string) => (state.apiKeys)[team],
   apiKey: state => (team: string, apiKey: string) =>
     state.apiKey[team] && state.apiKey[team][apiKey],
-  organization: state => (team: string) => state.organizations[team]
+  domains: state => (team: string) => (state.domains)[team],
+  domain: state => (team: string, domain: string) =>
+    state.domain[team] && state.domain[team][domain],
+  webhooks: state => (team: string) => (state.webhooks)[team],
+  webhook: state => (team: string, webhook: string) =>
+    state.webhook[team] && state.webhook[team][webhook],
+  organization: state => (team: string) => (state.organizations)[team]
 };
