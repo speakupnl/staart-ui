@@ -9,22 +9,38 @@
           <font-awesome-icon class="nav-icon" icon="cog" fixed-width />
           <span>Settings</span>
         </nuxt-link>
-        <nuxt-link class="item" :to="`/manage/${$route.params.team}/members`">
+        <nuxt-link
+          v-if="loggedInMembership !== 4"
+          class="item item--type-parent"
+          :to="`/manage/${$route.params.team}/team/members`"
+        >
           <font-awesome-icon class="nav-icon" icon="users" fixed-width />
           <span>Team</span>
         </nuxt-link>
+        <nav v-if="$route.path.includes('/team/')" class="sub-nav">
+          <nuxt-link
+            class="sub-item"
+            :to="`/manage/${$route.params.team}/team/members`"
+          >
+            <span>Members</span>
+          </nuxt-link>
+          <nuxt-link
+            class="sub-item"
+            :to="`/manage/${$route.params.team}/team/settings`"
+          >
+            <span>Settings</span>
+          </nuxt-link>
+        </nav>
         <nuxt-link
-          class="item"
-          :to="`/manage/${$route.params.team}/subscription`"
-        >
-          <font-awesome-icon class="nav-icon" icon="box-open" fixed-width />
-          <span>Subscription</span>
-        </nuxt-link>
-        <nuxt-link
+          v-if="loggedInMembership !== 3 && loggedInMembership !== 4"
           class="item item--type-parent"
           :to="`/manage/${$route.params.team}/billing/details`"
         >
-          <font-awesome-icon class="nav-icon" icon="address-card" fixed-width />
+          <font-awesome-icon
+            class="nav-icon"
+            icon="money-bill-wave"
+            fixed-width
+          />
           <span>Billing</span>
         </nuxt-link>
         <nav v-if="$route.path.includes('/billing/')" class="sub-nav">
@@ -32,7 +48,13 @@
             class="sub-item"
             :to="`/manage/${$route.params.team}/billing/details`"
           >
-            <span>Customer info</span>
+            <span>Details</span>
+          </nuxt-link>
+          <nuxt-link
+            class="sub-item"
+            :to="`/manage/${$route.params.team}/billing/subscription`"
+          >
+            <span>Subscription</span>
           </nuxt-link>
           <nuxt-link
             class="sub-item"
@@ -71,6 +93,12 @@
           >
             <span>Webhooks</span>
           </nuxt-link>
+          <nuxt-link
+            class="sub-item"
+            :to="`/manage/${$route.params.team}/developer/logs`"
+          >
+            <span>API logs</span>
+          </nuxt-link>
         </nav>
       </nav>
     </aside>
@@ -91,7 +119,7 @@ import {
   faCog,
   faBoxOpen,
   faUser,
-  faAddressCard,
+  faMoneyBillWave,
   faCode
 } from "@fortawesome/free-solid-svg-icons";
 library.add(
@@ -101,7 +129,7 @@ library.add(
   faBoxOpen,
   faUser,
   faCode,
-  faAddressCard
+  faMoneyBillWave
 );
 
 @Component({
@@ -110,11 +138,55 @@ library.add(
   }
 })
 export default class Manage extends Vue {
+  loggedInMembership = 3;
+  doneOnce = false;
+  private created() {
+    this.loggedInMembership = parseInt(
+      this.$store.getters["manage/loggedInMembership"](this.$route.params.team)
+    );
+  }
   private mounted() {
     this.update();
   }
   private update() {
     this.$store.commit("auth/setActiveOrganization", this.$route.params.team);
+    this.getUserMembership();
+  }
+  private getUserMembership() {
+    const user = this.$store.state.auth.user;
+    if (user) {
+      const org = this.$store.state.auth.activeOrganization;
+      if (org) {
+        const memberships = this.$store.state.users.memberships[
+          user.username || user.id
+        ];
+        if (memberships) {
+          const yourMembership = memberships.data.filter(
+            membership =>
+              membership.organization.id === org ||
+              membership.organization.username === org
+          );
+          if (yourMembership.length) {
+            const role = yourMembership[0].role;
+            this.$store.commit("manage/setLoggedInMembership", {
+              team: org,
+              role
+            });
+          } else if (!this.doneOnce) {
+            this.$store
+              .dispatch("users/getMemberships", { slug: user.username })
+              .then(() => this.getUserMembership())
+              .catch(() => {})
+              .then(() => (this.doneOnce = true));
+          }
+        } else {
+          this.$store
+            .dispatch("users/getMemberships", { slug: user.username })
+            .then(() => this.getUserMembership())
+            .catch(() => {});
+        }
+      }
+    }
   }
   @Watch("$route.path")
   onRouteChanged() {

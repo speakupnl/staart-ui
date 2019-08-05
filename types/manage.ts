@@ -18,6 +18,7 @@ export interface ApiKey extends IdRow {
   ipRestrictions?: string;
   referrerRestrictions?: string;
 }
+export type ApiKeyLogs = any;
 export interface Domain extends Row {
   domain: string;
   verificationCode: string;
@@ -115,6 +116,11 @@ export interface SingleApiKeyKV {
     [index: string]: ApiKey;
   };
 }
+export interface SingleApiKeyLogsKV {
+  [index: string]: {
+    [index: string]: ApiKeyLogs;
+  };
+}
 export interface SingleDomainKV {
   [index: string]: {
     [index: string]: Domain;
@@ -125,9 +131,13 @@ export interface SingleWebhookKV {
     [index: string]: Webhook;
   };
 }
+export interface LoggedInMembershipsKV {
+  [index: string]: number;
+}
 
 export interface RootState {
   membership?: Membership;
+  loggedInMembership: LoggedInMembershipsKV;
   organizations: OrganizationsKV;
   memberships: MembershipsKV;
   subscriptions: SubscriptionsKV;
@@ -139,6 +149,7 @@ export interface RootState {
   source: SingleSourceKV;
   apiKeys: ApiKeysKV;
   apiKey: SingleApiKeyKV;
+  apiKeyLogs: SingleApiKeyLogsKV;
   domains: DomainsKV;
   domain: SingleDomainKV;
   webhooks: WebhooksKV;

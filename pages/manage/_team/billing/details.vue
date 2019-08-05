@@ -18,7 +18,11 @@
         </button>
       </div>
     </div>
-    <p>
+    <p v-if="noBilling">
+      Set up your billing account here. You only need a billing account if you
+      want a paid subscription; you can continue to use a free subscription.
+    </p>
+    <p v-else>
       Manage your billing account details. This information will be used for
       invoicing.
     </p>
@@ -51,7 +55,11 @@
           </tbody>
         </table>
       </div>
-      <form v-meta-ctrl-enter="save" @submit.prevent="save">
+      <form
+        v-meta-ctrl-enter="save"
+        class="text text--mt-2"
+        @submit.prevent="save"
+      >
         <Input
           :value="billing.name"
           label="Name"
@@ -59,20 +67,22 @@
           required
           @input="val => (billing.name = val)"
         />
-        <Input
-          :value="billing.email"
-          type="email"
-          label="Email"
-          placeholder="Enter your billing email"
-          required
-          @input="val => (billing.email = val)"
-        />
-        <Input
-          :value="billing.phone"
-          label="Phone"
-          placeholder="Enter your billing phone number"
-          @input="val => (billing.phone = val)"
-        />
+        <div class="row">
+          <Input
+            :value="billing.email"
+            type="email"
+            label="Email"
+            placeholder="Enter your billing email"
+            required
+            @input="val => (billing.email = val)"
+          />
+          <Input
+            :value="billing.phone"
+            label="Phone"
+            placeholder="Enter your billing phone number"
+            @input="val => (billing.phone = val)"
+          />
+        </div>
         <Input
           :value="billing.address.line1"
           label="Address"
@@ -85,32 +95,39 @@
           placeholder="Add another address line"
           @input="val => (billing.address.line2 = val)"
         />
-        <Input
-          :value="billing.address.city"
-          label="City"
-          placeholder="Enter your city"
-          @input="val => (billing.address.city = val)"
-        />
-        <Input
-          :value="billing.address.postal_code"
-          label="Postal code"
-          placeholder="Enter your postal code"
-          @input="val => (billing.address.postal_code = val)"
-        />
-        <Input
-          :value="billing.address.state"
-          label="State"
-          placeholder="Enter your state"
-          @input="val => (billing.address.state = val)"
-        />
-        <Select
-          :value="billing.address.country"
-          label="Country"
-          placeholder="Select your billing country"
-          :options="countries"
-          @input="val => (billing.address.country = val)"
-        />
-        <button class="button">
+        <div class="row">
+          <Input
+            :value="billing.address.postal_code"
+            label="Postal code"
+            placeholder="Enter your postal code"
+            @input="val => (billing.address.postal_code = val)"
+          />
+          <Input
+            :value="billing.address.city"
+            label="City"
+            placeholder="Enter your city"
+            @input="val => (billing.address.city = val)"
+          />
+        </div>
+        <div class="row">
+          <Input
+            :value="billing.address.state"
+            label="State"
+            placeholder="Enter your state"
+            @input="val => (billing.address.state = val)"
+          />
+          <Select
+            :value="billing.address.country"
+            label="Country"
+            placeholder="Select your billing country"
+            :options="countries"
+            @input="val => (billing.address.country = val)"
+          />
+        </div>
+        <button v-if="noBilling" class="button button--state-cta">
+          Create billing account
+        </button>
+        <button v-else class="button">
           Update settings
         </button>
       </form>
@@ -160,6 +177,7 @@ export default class ManageSettings extends Vue {
   billing: Billing = emptyBilling;
   loading = "";
   countries = {};
+  noBilling = false;
 
   private created() {
     this.billing = {
@@ -197,6 +215,7 @@ export default class ManageSettings extends Vue {
       })
       .catch(error => {
         if (error.response.data.error === "no-customer") {
+          this.noBilling = true;
           this.billing = {
             email: this.user.email,
             name: this.user.name,

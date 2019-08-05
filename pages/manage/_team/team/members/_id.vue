@@ -3,7 +3,7 @@
     <div class="row">
       <div>
         <nuxt-link
-          :to="`/manage/${$route.params.team}/members`"
+          :to="`/manage/${$route.params.team}/team/members`"
           aria-label="Back"
           data-balloon-pos="down"
           class="button button--type-icon button--type-back"
@@ -49,8 +49,8 @@
     <Loading v-if="inviting" />
     <form
       v-else
-      v-meta-ctrl-enter="inviteMember"
-      @submit.prevent="inviteMember"
+      v-meta-ctrl-enter="updateMembership"
+      @submit.prevent="updateMembership"
     >
       <Select
         :value="newUserRole"
@@ -113,7 +113,10 @@ export default class ManageMembers extends Vue {
   private load() {
     this.inviting = "Loading member details";
     this.$store
-      .dispatch("manage/getMembership", this.$route.params.id)
+      .dispatch("manage/getMembership", {
+        team: this.$route.params.team,
+        id: this.$route.params.id
+      })
       .then(membership => {
         this.membership = membership;
         this.newUserRole = membership.role;
@@ -126,10 +129,11 @@ export default class ManageMembers extends Vue {
     this.load();
   }
 
-  private inviteMember() {
+  private updateMembership() {
     this.inviting = "Updating member details";
     this.$store
       .dispatch("manage/updateMembership", {
+        team: this.$route.params.team,
         id: this.$route.params.id,
         role: this.newUserRole
       })

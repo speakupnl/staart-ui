@@ -3,12 +3,12 @@ import download from "downloadjs";
 import Vue from "vue";
 import { RootState, Organization, emptyPagination } from "~/types/manage";
 
-const stripeProductId = "prod_FGFAYQGEFTm2lu";
 export const state = (): RootState => ({
   memberships: {},
   isDownloading: false,
   organizations: {},
   billing: {},
+  loggedInMembership: {},
   subscriptions: {},
   subscription: {},
   invoices: {},
@@ -20,7 +20,8 @@ export const state = (): RootState => ({
   domains: {},
   domain: {},
   webhooks: {},
-  webhook: {}
+  webhook: {},
+  apiKeyLogs: {}
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -28,6 +29,11 @@ export const mutations: MutationTree<RootState> = {
     const organizations = state.organizations;
     organizations[organization.id] = organization;
     Vue.set(state, "organizations", organizations);
+  },
+  setLoggedInMembership(state: RootState, { team, role }) {
+    const loggedInMembership = state.loggedInMembership;
+    loggedInMembership[team] = role;
+    Vue.set(state, "loggedInMembership", loggedInMembership);
   },
   setMembers(state: RootState, { team, members, start, next }): void {
     const currentMembers = state.memberships;
@@ -130,6 +136,20 @@ export const mutations: MutationTree<RootState> = {
     currentApiKeys[team] = currentApiKeys[team] || {};
     currentApiKeys[team][id] = { ...apiKey };
     Vue.set(state, "apiKey", currentApiKeys);
+  },
+  setApiKeyLogs(state: RootState, { team, apiKeyLogs, id, from }): void {
+    const currentApiKeyLogs = state.apiKeyLogs;
+    currentApiKeyLogs[team] = currentApiKeyLogs[team] || {};
+    currentApiKeyLogs[team][id] = currentApiKeyLogs[team][id] || emptyPagination;
+    if (from) {
+      currentApiKeyLogs[team][id].data = [
+        ...currentApiKeyLogs[team][id].data,
+        ...apiKeyLogs.data
+      ];
+    } else {
+      currentApiKeyLogs[team][id] = { ...apiKeyLogs };
+    }
+    Vue.set(state, "apiKeyLogs", currentApiKeyLogs);
   },
   setDomains(state: RootState, { team, domains, start, next }): void {
     const currentDomains = state.domains;
@@ -242,17 +262,18 @@ export const actions: ActionTree<RootState, RootState> = {
     return dispatch("getMembers", { team: context.team });
   },
   async deleteMembership({ dispatch }, { id, team }) {
-    await this.$axios.delete(`/memberships/${id}`);
+    await this.$axios.delete(`/organizations/${team}/memberships/${id}`);
     return dispatch("getMembers", { team });
   },
-  async getMembership(actions, context) {
-    return (await this.$axios.get(`/memberships/${context}`)).data;
+  async getMembership(actions, { id, team }) {
+    return (await this.$axios.get(`/organizations/${team}/memberships/${id}`)).data;
   },
   async updateMembership({ dispatch }, context) {
     const data = { ...context };
     delete data.id;
-    await this.$axios.patch(`/memberships/${context.id}`, data);
-    return dispatch("getMembership", context.id);
+    delete data.team;
+    await this.$axios.patch(`/organizations/${context.team}/memberships/${context.id}`, data);
+    return dispatch("getMembership", { team: context.team, id: context.id });
   },
   async getBilling({ commit }, team) {
     const billing: any = (await this.$axios.get(
@@ -316,7 +337,7 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async getPricingPlans({ commit }, context) {
     const subscriptions: any = (await this.$axios.get(
-      `/organizations/${context}/pricing/${stripeProductId}`
+      `/organizations/${context}/pricing`
     )).data;
     commit("setPricingPlans", subscriptions);
   },
@@ -369,6 +390,13 @@ export const actions: ActionTree<RootState, RootState> = {
     )).data;
     commit("setApiKey", { team, apiKey, id });
     return apiKey;
+  },
+  async getApiKeyLogs({ commit }, { team, id, range, from }) {
+    const apiKeyLogs: any = (await this.$axios.get(
+      `/organizations/${team}/api-keys/${id}/logs?range=${range}&from=${from}`
+    )).data;
+    commit("setApiKeyLogs", { team, apiKeyLogs, range, id, from });
+    return apiKeyLogs;
   },
   async createApiKey({ dispatch }, context) {
     const data = { ...context };
@@ -490,6 +518,7 @@ export const getters: GetterTree<RootState, RootState> = {
   securityEvents: state => state.recentEvents,
   isDownloading: state => state.isDownloading,
   memberships: state => (team: string) => (state.memberships)[team],
+  loggedInMembership: state => (team: string) => (state.loggedInMembership)[team] || 4,
   billing: state => (team: string) => (state.billing)[team],
   subscriptions: state => (team: string) => (state.subscriptions)[team],
   subscription: state => (team: string, subscriptionId: string) =>
@@ -509,5 +538,7 @@ export const getters: GetterTree<RootState, RootState> = {
   webhooks: state => (team: string) => (state.webhooks)[team],
   webhook: state => (team: string, webhook: string) =>
     state.webhook[team] && state.webhook[team][webhook],
+  apiKeyLogs: state => (team: string, apiKeyLogs: string) =>
+    state.apiKeyLogs[team] && state.apiKeyLogs[team][apiKeyLogs],
   organization: state => (team: string) => (state.organizations)[team]
 };
