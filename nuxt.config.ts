@@ -86,8 +86,8 @@ const config: NuxtConfiguration = {
   axios: {
     baseURL:
       process.env.NODE_ENV === "production"
-        ? "https://staart.caprover.oswaldlabs.com/v1"
-        : "http://localhost:7007/v1"
+        ? "https://speakup.caprover.oswaldlabs.com/v1"
+        : "http://localhost:7005/v1"
   },
   scrollBehavior() {
     return { x: 0, y: 0 };

@@ -2,8 +2,7 @@
   <Trap v-if="isVisible" :disabled="!showNav" class="navbar">
     <div class="container">
       <nuxt-link class="item item--type-logo" to="/">
-        <img alt="" src="/android-chrome-72x72.png" />
-        <span>Staart</span>
+        <img alt="Speakup" src="/logo.png" />
       </nuxt-link>
       <nav v-if="isAuthenticated" :class="{ 'nav--visible-true': showNav }">
         <nuxt-link
@@ -354,7 +353,7 @@ export default class Card extends Vue {
     font-weight: normal;
   }
   img {
-    height: 1.5rem;
+    height: 2rem;
     margin-top: -0.2rem;
     margin-right: 0.25rem;
     vertical-align: middle;

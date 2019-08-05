@@ -3,7 +3,7 @@
     <div v-if="!isAuthenticated" class="banner">
       <div class="hero hero--align-center">
         <h1>It's a no-brainer&mdash;get started now.</h1>
-        <p>Create an account in our fake startup to see Staart in action.</p>
+        <p>Create an account in our fake startup to see Speakup in action.</p>
         <div>
           <nuxt-link
             class="button button--size-large button--color-primary"
@@ -16,26 +16,18 @@
     <div class="container links">
       <div class="larger">
         <nuxt-link class="item item--type-logo" to="/">
-          <img alt="" src="/android-chrome-72x72.png" />
-          <span>Staart</span>
+          <img alt="Speakup" src="/logo.png" />
         </nuxt-link>
-        <p class="text text--mt-1">
-          An
-          <a target="_blank" href="https://o15y.com">O15Y</a>
-          project<br />Made by
-          <a target="_blank" href="https://anandchowdhary.com"
-            >Anand Chowdhary</a
-          >
-        </p>
+        <p class="text text--mt-1">Speakup Developer Platform</p>
       </div>
       <div>
         <h2>Product</h2>
         <nav>
-          <nuxt-link to="/">Why Staart?</nuxt-link>
+          <nuxt-link to="/">Why Speakup?</nuxt-link>
           <nuxt-link to="/">Enterprise</nuxt-link>
           <nuxt-link to="/">Security &amp; privacy</nuxt-link>
           <nuxt-link to="/pricing">Pricing</nuxt-link>
-          <nuxt-link to="/">Staart Demo</nuxt-link>
+          <nuxt-link to="/">Speakup Demo</nuxt-link>
         </nav>
       </div>
       <div>
@@ -185,7 +177,7 @@ nav {
     font-weight: normal;
   }
   img {
-    height: 1.5rem;
+    height: 2rem;
     margin-top: -0.2rem;
     margin-right: 0.25rem;
     vertical-align: middle;
