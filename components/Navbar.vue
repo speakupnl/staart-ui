@@ -389,7 +389,7 @@ nav .item {
     0px 15px 35px 0px rgba(49, 49, 93, 0.1),
     0px 5px 15px 0px rgba(0, 0, 0, 0.08);
   padding: 0.5rem 0;
-  border-radius: 0.2rem;
+  border-radius: 0.1rem;
   &::before {
     content: "";
     position: absolute;

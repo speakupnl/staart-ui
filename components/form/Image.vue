@@ -52,7 +52,7 @@ export default class ImageInput extends Vue {
     display: block;
     width: 100%;
     box-sizing: border-box;
-    border-radius: 0.2rem;
+    border-radius: 0.1rem;
     border: 1px solid rgba(121, 82, 179, 0.25);
     background-color: #fff;
     &:focus {

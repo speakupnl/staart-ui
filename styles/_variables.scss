@@ -27,8 +27,8 @@ $background-color: $color-light-gray;
 $link-color: darken($color-primary, 15%);
 
 // Buttons
-$button-background-color: rgba($color-primary, 0.03);
-$button-text-color: $color-primary;
+$button-background-color: $color-primary;
+$button-text-color: $color-white;
 $button-disabled-background-color: #eee;
 $button-primary-background-color: $color-primary;
 $button-primary-text-color: #fff;

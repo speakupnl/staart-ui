@@ -89,7 +89,11 @@
                     {{ log._source.method }}
                   </td>
                   <td>
-                    <code>{{ log._source.url.split("?")[0] }}</code>
+                    <input
+                      disabled
+                      class="input input--type-code"
+                      :value="log._source.url"
+                    />
                   </td>
                   <td v-if="log._source && log._source.statusCode">
                     <HTTPStatus :status="log._source.statusCode" />
@@ -312,4 +316,8 @@ export default class ManageSettings extends Vue {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+code {
+  white-space: nowrap;
+}
+</style>

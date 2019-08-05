@@ -185,7 +185,7 @@ export default class Autocomplete extends Vue {
     top: 110%;
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 0.2rem;
+    border-radius: 0.1rem;
     box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
     li {
       margin: 0;
