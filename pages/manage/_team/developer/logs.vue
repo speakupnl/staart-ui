@@ -1,7 +1,6 @@
 <template>
   <main>
-    <Loading v-if="loading" :message="loading" />
-    <div v-else>
+    <div>
       <div class="row">
         <h1>API logs</h1>
         <div class="text text--align-right">
@@ -11,7 +10,12 @@
             class="button button--type-icon"
             @click="load"
           >
-            <font-awesome-icon class="icon" icon="sync" fixed-width />
+            <font-awesome-icon
+              class="icon"
+              icon="sync"
+              :spin="!!loading"
+              fixed-width
+            />
           </button>
         </div>
       </div>
@@ -88,11 +92,12 @@
                   <td v-if="log._source && log._source.method">
                     {{ log._source.method }}
                   </td>
-                  <td>
+                  <td class="less-pad">
                     <input
-                      disabled
-                      class="input input--type-code"
+                      v-if="log._source && log._source.url"
+                      class="input input--font-monospace input--padding-condensed"
                       :value="log._source.url"
+                      disabled
                     />
                   </td>
                   <td v-if="log._source && log._source.statusCode">
@@ -152,6 +157,7 @@
           </div>
         </div>
       </div>
+      <Loading v-else :message="loading" />
     </div>
   </main>
 </template>
@@ -223,6 +229,16 @@ export default class ManageSettings extends Vue {
     this.apiKeys = {
       ...this.$store.getters["manage/apiKeys"](this.$route.params.team)
     };
+    const apiKeyOptions = {};
+    if (this.apiKeys && this.apiKeys.data) {
+      this.apiKeys.data.forEach(apiKey => {
+        apiKeyOptions[apiKey.id] = apiKey.name || apiKey.id;
+      });
+      this.apiKeyOptions = apiKeyOptions;
+      if (this.apiKeys.data.length) this.activeApiKey = this.apiKeys.data[0].id;
+    }
+    const tryNum = parseInt(this.$route.query.key as string);
+    if (!isNaN(tryNum)) this.activeApiKey = tryNum;
     this.data = {
       ...this.$store.getters["manage/apiKeyLogs"](
         this.$route.params.team,
@@ -247,7 +263,7 @@ export default class ManageSettings extends Vue {
         this.loading = "";
       })
       .then(apiKeyId => {
-        if (apiKeyId) this.activeApiKey = apiKeyId;
+        if (apiKeyId && !this.activeApiKey) this.activeApiKey = apiKeyId;
         return this.loadData();
       })
       .catch(error => {
@@ -317,7 +333,8 @@ export default class ManageSettings extends Vue {
 </script>
 
 <style lang="scss" scoped>
-code {
-  white-space: nowrap;
+td.less-pad {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>

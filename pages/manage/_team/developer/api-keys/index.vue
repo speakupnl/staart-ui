@@ -1,7 +1,6 @@
 <template>
   <main>
-    <Loading v-if="loading" :message="loading" />
-    <div v-else>
+    <div>
       <div class="row">
         <h1>API keys</h1>
         <div class="text text--align-right">
@@ -11,7 +10,12 @@
             class="button button--type-icon"
             @click="load"
           >
-            <font-awesome-icon class="icon" icon="sync" fixed-width />
+            <font-awesome-icon
+              class="icon"
+              icon="sync"
+              :spin="!!loading"
+              fixed-width
+            />
           </button>
         </div>
       </div>
@@ -70,6 +74,20 @@
                 >
                   <font-awesome-icon class="icon" icon="eye" fixed-width />
                 </router-link>
+                <router-link
+                  :to="
+                    `/manage/${$route.params.team}/developer/logs?key=${apiKey.id}`
+                  "
+                  aria-label="Logs"
+                  data-balloon-pos="up"
+                  class="button button--type-icon"
+                >
+                  <font-awesome-icon
+                    class="icon"
+                    icon="chart-line"
+                    fixed-width
+                  />
+                </router-link>
                 <button
                   aria-label="Delete"
                   data-balloon-pos="up"
@@ -104,7 +122,11 @@
           </button>
         </div>
       </div>
-      <div v-if="loggedInMembership !== 3 && loggedInMembership !== 4">
+      <Loading v-else :message="loading" />
+      <div
+        v-if="loggedInMembership !== 3 && loggedInMembership !== 4"
+        class="text text--mt-2"
+      >
         <h2>Create API key</h2>
         <p>
           You can use API keys to programmatically access Staart in your
@@ -156,7 +178,8 @@ import {
   faArrowDown,
   faSync,
   faTrash,
-  faEye
+  faEye,
+  faChartLine
 } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@/components/Loading.vue";
 import Confirm from "@/components/Confirm.vue";
@@ -170,7 +193,7 @@ import { User } from "@/types/auth";
 import { ApiKeys, emptyPagination, ApiKey } from "@/types/manage";
 import translations from "@/locales/en";
 const scopes = translations.scopes;
-library.add(faArrowDown, faSync, faTrash, faEye);
+library.add(faArrowDown, faSync, faTrash, faEye, faChartLine);
 
 @Component({
   components: {

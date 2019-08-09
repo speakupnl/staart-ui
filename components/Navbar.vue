@@ -6,22 +6,19 @@
       </nuxt-link>
       <nav v-if="isAuthenticated" :class="{ 'nav--visible-true': showNav }">
         <nuxt-link
-          v-if="activeOrganization && activeOrganization !== 'undefined'"
+          v-if="activeOrganization"
           class="item"
           :to="`/dashboard/${activeOrganization}`"
           >Dashboard</nuxt-link
         >
         <nuxt-link v-else class="item" to="/dashboard">Dashboard</nuxt-link>
         <nuxt-link
-          v-if="
-            activeOrganization &&
-              activeOrganization !== 'undefined' &&
-              loggedInMembership !== 4
-          "
+          v-if="activeOrganization"
           class="item"
           :to="`/manage/${activeOrganization}/settings`"
           >Settings</nuxt-link
         >
+        <nuxt-link v-else class="item" to="/settings">Settings</nuxt-link>
         <span>
           <button
             class="item item--type-less"

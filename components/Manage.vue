@@ -10,7 +10,6 @@
           <span>Settings</span>
         </nuxt-link>
         <nuxt-link
-          v-if="loggedInMembership !== 4"
           class="item item--type-parent"
           :to="`/manage/${$route.params.team}/team/members`"
         >
