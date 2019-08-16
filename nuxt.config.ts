@@ -71,6 +71,7 @@ const config: NuxtConfiguration = {
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
     "@nuxtjs/markdownit",
+    "@nuxtjs/sitemap",
     "@bazzite/nuxt-netlify",
     [
       "@nuxtjs/google-analytics",

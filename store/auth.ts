@@ -70,7 +70,7 @@ export const actions: ActionTree<RootState, RootState> = {
     commit("startLoading");
     try {
       const tokens = (await this.$axios.post("/auth/login", context)).data;
-      dispatch("loginWithTokens", tokens);
+      return dispatch("loginWithTokens", tokens);
     } catch (error) {
       commit("stopLoading");
       throw new Error(error);
@@ -91,7 +91,15 @@ export const actions: ActionTree<RootState, RootState> = {
   async register({ commit }, context) {
     return (await this.$axios.post("/auth/register", context)).data;
   },
+  async safeRefresh({ state, dispatch }) {
+    const token = state.tokens.token;
+    if (!token) return;
+    if (decode(token).exp * 1000 < new Date().getTime()) {
+      return dispatch("refresh");
+    }
+  },
   async refresh({ state, commit }) {
+    if (!state.tokens.refresh) throw new Error();
     commit("startLoading");
     try {
       const tokens: Tokens = (await this.$axios.post("/auth/refresh", {

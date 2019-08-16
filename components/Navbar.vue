@@ -5,6 +5,9 @@
         <img alt="Speakup" src="/logo.png" />
       </nuxt-link>
       <nav v-if="isAuthenticated" :class="{ 'nav--visible-true': showNav }">
+        <nuxt-link v-if="user.role === 3" class="item" :to="`/admin/users`"
+          >Admin</nuxt-link
+        >
         <nuxt-link
           v-if="activeOrganization"
           class="item"
@@ -19,6 +22,7 @@
           >Settings</nuxt-link
         >
         <nuxt-link v-else class="item" to="/settings">Settings</nuxt-link>
+        <nuxt-link class="item" to="/docs">Docs</nuxt-link>
         <span>
           <button
             class="item item--type-less"
@@ -29,10 +33,11 @@
             :aria-expanded="(visible === 'help').toString()"
           >
             <font-awesome-icon
-              class="nav-icon"
+              class="nav-icon hide-mobile"
               icon="question-circle"
               fixed-width
             />
+            <span class="hide-desktop">Help</span>
           </button>
           <transition name="dropdown-fade">
             <div
@@ -51,7 +56,7 @@
             </div>
           </transition>
         </span>
-        <span>
+        <span class="hide-mobile">
           <button
             class="item item--type-less item--type-last"
             to="/settings/notifications"
@@ -88,7 +93,7 @@
           </button>
           <transition name="dropdown-fade">
             <div
-              v-show="visible === 'account'"
+              v-show="visible === 'account' && user"
               id="account"
               ref="dropdown-account"
               class="dropdown"
@@ -96,14 +101,38 @@
               <nuxt-link
                 class="item"
                 :to="`/users/${user.username || user.id}/profile`"
-                >Settings</nuxt-link
+                >Profile</nuxt-link
               >
+              <div
+                v-if="
+                  memberships && memberships.data && memberships.data.length
+                "
+              >
+                <div class="subheading">Your teams</div>
+                <span
+                  v-for="(membership, i) in memberships.data"
+                  :key="`m${membership.id}${i}`"
+                >
+                  <nuxt-link
+                    v-if="membership && membership.organization"
+                    class="item"
+                    :to="
+                      `/manage/${membership.organization.username ||
+                        membership.organization.id}/settings`
+                    "
+                    >{{ (membership.organization || {}).name }}</nuxt-link
+                  >
+                </span>
+              </div>
               <nuxt-link
+                v-else
                 class="item"
                 :to="`/users/${user.username || user.id}/memberships`"
                 >Your teams</nuxt-link
               >
-              <button class="item" @click="logout">Logout</button>
+              <button style="margin-top: 1rem" class="item" @click="logout">
+                Logout
+              </button>
             </div>
           </transition>
         </span>
@@ -133,6 +162,7 @@
           </transition>
         </span>
         <nuxt-link class="item" to="/pricing">Pricing</nuxt-link>
+        <nuxt-link class="item" to="/docs">Docs</nuxt-link>
         <nuxt-link
           v-if="$route.path !== '/auth/login'"
           class="button"
@@ -165,7 +195,6 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { mapGetters } from "vuex";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import Trap from "vue-focus-lock";
@@ -176,6 +205,9 @@ import {
   faBars,
   faTimes
 } from "@fortawesome/free-solid-svg-icons";
+import { Memberships } from "../types/settings";
+import { emptyPagination } from "../types/manage";
+import { emptyUser } from "../types/users";
 import Notifications from "@/components/Notifications.vue";
 library.add(faBell, faQuestionCircle, faBars, faTimes);
 // const feedback = new Feeedback({
@@ -188,10 +220,6 @@ library.add(faBell, faQuestionCircle, faBars, faTimes);
 // });
 
 @Component({
-  computed: mapGetters({
-    isAuthenticated: "auth/isAuthenticated",
-    user: "auth/user"
-  }),
   components: {
     FontAwesomeIcon,
     Notifications,
@@ -200,16 +228,31 @@ library.add(faBell, faQuestionCircle, faBars, faTimes);
 })
 export default class Card extends Vue {
   visible: string | null = null;
+  memberships: Memberships = emptyPagination;
   isVisible = true;
   notificationCount = 0;
   showNav = false;
   activeOrganization: string | null = null;
   loggedInMembership = 3;
+  isAuthenticated = false;
+  user = emptyUser;
   @Watch("$route")
   private onRouteChanged() {
     this.updateNavBar();
   }
+  @Watch("visible")
+  private changedVisible() {
+    if (this.visible === "account") {
+      this.load();
+    }
+  }
   private updateNavBar() {
+    try {
+      this.isAuthenticated = this.$store.state.auth.isAuthenticated;
+      if (this.isAuthenticated) {
+        this.user = this.$store.state.auth.user;
+      }
+    } catch (error) {}
     this.showNav = false;
     this.loggedInMembership = parseInt(
       this.$store.getters["manage/loggedInMembership"](this.$route.params.team)
@@ -224,12 +267,19 @@ export default class Card extends Vue {
     } else {
       this.activeOrganization = this.$store.getters["auth/activeOrganization"];
     }
+    const user = this.$store.getters["auth/user"];
+    if (user && user.username)
+      this.memberships = {
+        ...this.$store.getters["users/memberships"](user.username)
+      };
   }
   private updateNotificationCount(count: number) {
     this.notificationCount = count;
   }
   private logout() {
     this.$store.dispatch("auth/logout");
+    this.isAuthenticated = false;
+    this.user = emptyUser;
     this.$router.push("/");
   }
   private mounted() {
@@ -263,6 +313,24 @@ export default class Card extends Vue {
   }
   private feedback() {
     // feedback.open();
+  }
+  private load() {
+    const user = this.$store.getters["auth/user"];
+    if (
+      user &&
+      user.username &&
+      (!this.memberships ||
+        !this.memberships.data ||
+        !this.memberships.data.length)
+    )
+      this.$store
+        .dispatch("users/getMemberships", { slug: user.username })
+        .then(memberships => {
+          this.memberships = { ...memberships };
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
   }
 }
 </script>
@@ -449,5 +517,13 @@ nav .item.item--type-less:hover {
   border-radius: 100%;
   position: absolute;
   transform: translateX(0.75rem) translateY(-0.75rem) scale(0.8);
+}
+.subheading {
+  display: block;
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 85%;
 }
 </style>
