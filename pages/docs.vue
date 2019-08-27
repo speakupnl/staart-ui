@@ -1,6 +1,8 @@
 <template>
   <main>
-    <iframe src="/swagger.html"></iframe>
+    <iframe
+      src="https://speakup-staart.caprover.oswaldlabs.com/swagger.html"
+    ></iframe>
   </main>
 </template>
 

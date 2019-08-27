@@ -56,32 +56,6 @@
             </div>
           </transition>
         </span>
-        <span class="hide-mobile">
-          <button
-            class="item item--type-less item--type-last"
-            to="/settings/notifications"
-            aria-label="Notifications"
-            data-balloon-pos="down"
-            aria-controls="notifications"
-            :aria-expanded="(visible === 'notifications').toString()"
-          >
-            <font-awesome-icon class="nav-icon" icon="bell" fixed-width />
-            <span v-if="notificationCount" class="notif-count">{{
-              notificationCount
-            }}</span>
-          </button>
-          <transition name="dropdown-fade">
-            <div
-              v-show="visible === 'notifications'"
-              id="notifications"
-              ref="dropdown-notifications"
-              class="dropdown"
-              style="width: 350px"
-            >
-              <Notifications :on-count="updateNotificationCount" />
-            </div>
-          </transition>
-        </span>
         <span>
           <button
             class="item item--type-user"
@@ -200,7 +174,6 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import Trap from "vue-focus-lock";
 // import Feeedback from "feeedback";
 import {
-  faBell,
   faQuestionCircle,
   faBars,
   faTimes
@@ -208,8 +181,7 @@ import {
 import { Memberships } from "../types/settings";
 import { emptyPagination } from "../types/manage";
 import { emptyUser } from "../types/users";
-import Notifications from "@/components/Notifications.vue";
-library.add(faBell, faQuestionCircle, faBars, faTimes);
+library.add(faQuestionCircle, faBars, faTimes);
 // const feedback = new Feeedback({
 //   onSubmit: result =>
 //     new Promise((resolve, reject) => {
@@ -222,7 +194,6 @@ library.add(faBell, faQuestionCircle, faBars, faTimes);
 @Component({
   components: {
     FontAwesomeIcon,
-    Notifications,
     Trap
   }
 })
