@@ -1,7 +1,6 @@
 <template>
   <main>
     <h1>Settings</h1>
-    <p>Your startup's main product should have its settings here</p>
   </main>
 </template>
 
@@ -9,7 +8,13 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class Settings extends Vue {}
+export default class Settings extends Vue {
+  private created() {
+    this.$router.replace(
+      `/manage/${this.$route.params.team}/developer/api-keys`
+    );
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

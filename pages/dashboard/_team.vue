@@ -5,10 +5,6 @@
     >
       <div class="card card--type-padded text text--align-center">
         <h1>Dashboard</h1>
-        <p>
-          The main page for your SaaS comes here. Whatever is the most important
-          thing for your product should come here.
-        </p>
       </div>
     </div>
   </main>
@@ -26,7 +22,9 @@ import Loading from "@/components/Loading.vue";
   }
 })
 export default class Dashboard extends Vue {
-  private mounted() {}
+  private created() {
+    this.$router.replace(`/manage/${this.$route.params.team}/settings`);
+  }
 }
 </script>
 
