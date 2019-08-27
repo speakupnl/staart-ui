@@ -27,7 +27,11 @@
               </nuxt-link>
             </div>
           </div>
-          <img class="b" alt="" src="/images/undraw_product_tour_foyt.svg" />
+          <img
+            class="b"
+            alt=""
+            src="/images/undraw_mobile_marketing_iqbr.svg"
+          />
         </div>
       </div>
     </header>
@@ -36,38 +40,22 @@
         <div class="container">
           <div class="row text text--align-center main-features">
             <div>
-              <font-awesome-icon
-                class="icon icon--size-lg"
-                icon="credit-card"
-                fixed-width
-              />
+              <span class="icon icon--size-lg">💼</span>
               <h3><Translate t="pages.index.features.1.title" /></h3>
               <p><Translate t="pages.index.features.1.intro" /></p>
             </div>
             <div>
-              <font-awesome-icon
-                class="icon icon--size-lg"
-                icon="users"
-                fixed-width
-              />
+              <span class="icon icon--size-lg">👥</span>
               <h3><Translate t="pages.index.features.2.title" /></h3>
               <p><Translate t="pages.index.features.2.intro" /></p>
             </div>
             <div>
-              <font-awesome-icon
-                class="icon icon--size-lg"
-                icon="code"
-                fixed-width
-              />
+              <span class="icon icon--size-lg">💻</span>
               <h3><Translate t="pages.index.features.3.title" /></h3>
               <p><Translate t="pages.index.features.3.intro" /></p>
             </div>
             <div>
-              <font-awesome-icon
-                class="icon icon--size-lg"
-                icon="laptop"
-                fixed-width
-              />
+              <span class="icon icon--size-lg">🇳🇱</span>
               <h3><Translate t="pages.index.features.4.title" /></h3>
               <p><Translate t="pages.index.features.4.intro" /></p>
             </div>
@@ -189,8 +177,7 @@ dt {
   }
 }
 .icon--size-lg {
-  font-size: 250%;
-  opacity: 0.5;
+  font-size: 350%;
   margin-bottom: 1rem;
 }
 .label-help {
@@ -208,9 +195,10 @@ dt {
   white-space: normal;
 }
 .b {
-  height: 20rem;
+  height: auto;
+  max-width: 600px;
   margin-top: -4rem;
-  margin-bottom: -5rem;
+  margin-bottom: -10rem;
 }
 @media (max-width: 500px) {
   .b {

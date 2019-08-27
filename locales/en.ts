@@ -232,23 +232,23 @@ export default {
       },
       features: {
         1: {
-          title: "SaaS Billing",
+          title: "Made for SaaS",
           intro:
-            "Subscriptions, credit cards, invoices, and more, powered by Stripe"
+            "Automate your customer processes for your SaaS business"
         },
         2: {
-          title: "Teams",
-          intro: "Users can invite their teams and manage roles and permissions"
+          title: "Invite your team",
+          intro: "Add your team and share your resources for no extra cost"
         },
         3: {
-          title: "Platform",
+          title: "Powerful platform",
           intro:
-            "Authentication, scoped API keys, and more ways to use your SaaS"
+            "Highly scalable, powerful developer API for projects of all sizes"
         },
         4: {
-          title: "Full-stack",
+          title: "Dutch quality",
           intro:
-            "Node.js backend written in TypeScript with a beautiful Vue PWA."
+            "Our high-quality services are served directly from the Netherlands"
         }
       },
       logos: {
