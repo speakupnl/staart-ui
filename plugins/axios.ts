@@ -33,7 +33,8 @@ export default function({
         $axios.setHeader("X-Requested-With", "XMLHttpRequest");
 
         // Don't worry, this is a public API key and you can see this :)
-        $axios.setHeader("X-Api-Key", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsIm9yZ2FuaXphdGlvbklkIjoxLCJyZWZlcnJlclJlc3RyaWN0aW9ucyI6Im5ldGxpZnkuY29tIiwiaWF0IjoxNTY0OTkyNDY2LCJleHAiOjg4NTAyNTgzMjYwNDcsImlzcyI6InN0YWFydCIsInN1YiI6ImFwaS1rZXkiLCJqdGkiOiIzODdmNWRjZDliN2UifQ.XZquqZTZ9YIZb6WO5AA69FMnvR4pdD9T4dwU0daXSxw");
+        if (process.env.NODE_ENV !== "development")
+          $axios.setHeader("X-Api-Key", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsIm9yZ2FuaXphdGlvbklkIjoxLCJyZWZlcnJlclJlc3RyaWN0aW9ucyI6Im5ldGxpZnkuY29tIiwiaWF0IjoxNTY0OTkyNDY2LCJleHAiOjg4NTAyNTgzMjYwNDcsImlzcyI6InN0YWFydCIsInN1YiI6ImFwaS1rZXkiLCJqdGkiOiIzODdmNWRjZDliN2UifQ.XZquqZTZ9YIZb6WO5AA69FMnvR4pdD9T4dwU0daXSxw");
         try {
           const token = config.headers.common.Authorization.replace(
             "Bearer ",

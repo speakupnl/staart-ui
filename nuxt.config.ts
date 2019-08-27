@@ -36,6 +36,10 @@ const config: NuxtConfiguration = {
         rel: "stylesheet",
         href:
           "https://cdnjs.cloudflare.com/ajax/libs/balloon-css/1.0.3/balloon.min.css"
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css?family=Lato:400,700&display=swap"
       }
     ],
     script: [
