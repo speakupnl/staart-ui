@@ -3,14 +3,14 @@ import { Configuration } from "@nuxt/types";
 const config: Configuration = {
   mode: "universal",
   head: {
-    title: "Staart UI",
+    title: "Speakup Developers",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "description",
         name: "description",
-        content: "Frontend admin UI for Staart"
+        content: "Developer API platform by Speakup"
       }
     ],
     link: [

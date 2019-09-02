@@ -115,7 +115,7 @@ export default function({
     } else {
       Vue.notify({
         group: "auth",
-        text: error.response.data.code || error.response.data.error,
+        text: error.response.data.message || error.response.data.code || error.response.data.error,
         type: "notification notification--color-danger"
       });
     }

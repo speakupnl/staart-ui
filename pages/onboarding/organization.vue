@@ -74,10 +74,10 @@ export default class OnboardingTeam extends Vue {
   loading = false;
   private mounted() {
     if (this.user && this.user.nickname)
-      this.teamName = `${this.user.nickname}'s team`;
+      this.teamName = `${this.user.nickname}'s assistant`;
   }
   private setupTeam() {
-    this.teamName = this.teamName || `${this.user.nickname}'s team`;
+    this.teamName = this.teamName || `${this.user.nickname}'s assistant`;
     this.loading = true;
     this.$store
       .dispatch("settings/createOrganization", {

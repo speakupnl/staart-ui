@@ -164,10 +164,11 @@ export default class Login extends Vue {
   private login() {
     this.$store
       .dispatch("auth/loginWithEmailPassword", {
-        email: this.email,
+        username: this.email,
         password: this.password
       })
       .then(response => {
+        console.log("GOT", response);
         if (response === "2fa") {
           this.$router.push("/auth/2fa");
         } else {

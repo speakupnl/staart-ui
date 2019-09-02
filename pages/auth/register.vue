@@ -11,15 +11,26 @@
     <Card v-else>
       <h1>Register</h1>
       <form v-meta-ctrl-enter="register" @submit.prevent="register">
-        <Input
-          v-model="name"
-          type="text"
-          label="Name"
-          placeholder="Enter your full name"
-          autocomplete="name"
-          required
-          autofocus
-        />
+        <div class="row">
+          <Input
+            v-model="firstName"
+            type="text"
+            label="First name"
+            placeholder="Enter your first name"
+            autocomplete="first_name"
+            required
+            autofocus
+          />
+          <Input
+            v-model="lastName"
+            type="text"
+            label="Last name"
+            placeholder="Enter your last name"
+            autocomplete="last_name"
+            required
+            autofocus
+          />
+        </div>
         <Input
           v-model="email"
           type="email"
@@ -27,14 +38,6 @@
           placeholder="Enter your work email"
           autocomplete="email"
           required
-        />
-        <Input
-          v-model="password"
-          type="password"
-          label="Password"
-          placeholder="Enter a secure password"
-          autocomplete="new-password"
-          help="Tip: Use a strong password generator"
         />
         <button
           class="button button--width-full button--size-large"
@@ -69,17 +72,17 @@ import Input from "@/components/form/Input.vue";
   })
 })
 export default class Login extends Vue {
-  name = "";
+  firstName = "";
+  lastName = "";
   email = "";
-  password = "";
   isAuthenticated!: boolean;
   completedRegistration = false;
   private register() {
     this.$store
       .dispatch("auth/register", {
         email: this.email,
-        name: this.name,
-        password: this.password
+        lastName: this.lastName,
+        firstName: this.firstName
       })
       .then(() => {
         this.completedRegistration = true;
@@ -88,9 +91,9 @@ export default class Login extends Vue {
         throw new Error(error);
       })
       .finally(() => {
-        this.name = "";
+        this.firstName = "";
+        this.lastName = "";
         this.email = "";
-        this.password = "";
       });
   }
   private created() {

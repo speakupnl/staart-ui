@@ -55,8 +55,8 @@
             aria-controls="account"
             :aria-expanded="(visible === 'account').toString()"
           >
-            <img alt="" :src="user.profilePicture" />
-            {{ user.nickname }}
+            <img alt="" :src="`https://unavatar.now.sh/${user.email}`" />
+            {{ user.given_name }}
           </button>
           <transition name="dropdown-fade">
             <div
