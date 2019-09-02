@@ -24,9 +24,9 @@ export default class Dashboard extends Vue {
       this.$router.replace(`/dashboard/${team}`);
     } else {
       const user = this.$store.getters["auth/user"];
-      if (user.username)
+      if (user.id)
         return this.$store
-          .dispatch("users/getMemberships", { slug: user.username })
+          .dispatch("users/getMemberships", { slug: user.id })
           .then(memberships => this.continue(memberships))
           .catch(() => {});
       this.$store
@@ -39,10 +39,10 @@ export default class Dashboard extends Vue {
     if (memberships.data && memberships.data.length) {
       if (
         memberships.data[0].organization &&
-        memberships.data[0].organization.username
+        memberships.data[0].organization.id
       ) {
         this.$router.replace(
-          `/dashboard/${memberships.data[0].organization.username}`
+          `/dashboard/${memberships.data[0].organization.id}`
         );
       } else {
         this.$router.replace(

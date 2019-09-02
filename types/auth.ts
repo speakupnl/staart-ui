@@ -1,6 +1,7 @@
 export interface Tokens {
   token: string;
   refresh: string;
+  user?: User;
 }
 
 export interface User {

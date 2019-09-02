@@ -188,7 +188,7 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async getMemberships({ commit }, { slug, start = 0 }) {
     const memberships: any = (await this.$axios.get(
-      `/users/${slug}/memberships?start=${start}`
+      `/users/${slug}/groups?start=${start}`
     )).data;
     commit("setMemberships", {
       slug,
@@ -200,13 +200,13 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async getMembership({ commit }, { slug, id }) {
     const membership: any = (await this.$axios.get(
-      `/users/${slug}/memberships/${id}`
+      `/users/${slug}/groups/${id}`
     )).data;
     commit("setMembership", { slug, membership, id });
     return membership;
   },
   async deleteMembership({ dispatch }, context) {
-    await this.$axios.delete(`/users/${context.slug}/memberships/${context.id}`);
+    await this.$axios.delete(`/users/${context.slug}/groups/${context.id}`);
     return dispatch("getMemberships", { slug: context.slug });
   },
   async getEmails({ commit }, { slug, start = 0 }) {

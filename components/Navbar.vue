@@ -56,7 +56,7 @@
             :aria-expanded="(visible === 'account').toString()"
           >
             <img alt="" :src="`https://unavatar.now.sh/${user.email}`" />
-            {{ user.given_name }}
+            {{ user.firstName }}
           </button>
           <transition name="dropdown-fade">
             <div
@@ -65,9 +65,7 @@
               ref="dropdown-account"
               class="dropdown"
             >
-              <nuxt-link
-                class="item"
-                :to="`/users/${user.username || user.id}/profile`"
+              <nuxt-link class="item" :to="`/users/${user.id}/profile`"
                 >Profile</nuxt-link
               >
               <div
@@ -94,7 +92,7 @@
               <nuxt-link
                 v-else
                 class="item"
-                :to="`/users/${user.username || user.id}/memberships`"
+                :to="`/users/${user.id}/memberships`"
                 >Your teams</nuxt-link
               >
               <button style="margin-top: 1rem" class="item" @click="logout">
@@ -232,9 +230,9 @@ export default class Card extends Vue {
       this.activeOrganization = this.$store.getters["auth/activeOrganization"];
     }
     const user = this.$store.getters["auth/user"];
-    if (user && user.username)
+    if (user && user.id)
       this.memberships = {
-        ...this.$store.getters["users/memberships"](user.username)
+        ...this.$store.getters["users/memberships"](user.id)
       };
   }
   private updateNotificationCount(count: number) {
@@ -282,13 +280,13 @@ export default class Card extends Vue {
     const user = this.$store.getters["auth/user"];
     if (
       user &&
-      user.username &&
+      user.id &&
       (!this.memberships ||
         !this.memberships.data ||
         !this.memberships.data.length)
     )
       this.$store
-        .dispatch("users/getMemberships", { slug: user.username })
+        .dispatch("users/getMemberships", { slug: user.id })
         .then(memberships => {
           this.memberships = { ...memberships };
         })

@@ -21,29 +21,21 @@
     <Loading v-if="loading" :message="loading" />
     <form v-else v-meta-ctrl-enter="save" @submit.prevent="save">
       <div class="row">
-        <div
-          class="profile-picture column column--type-shrink text text--align-center text--mr-2 text--mb-1"
-        >
-          <img alt="" :src="user.profilePicture" />
-          <a href="https://gravatar.com" target="_blank">Gravatar</a>
-        </div>
-        <div>
-          <Input
-            :value="user.name"
-            label="Full name"
-            placeholder="Enter your full name"
-            required
-            @input="val => (user.name = val)"
-          />
-        </div>
+        <Input
+          :value="user.firstName"
+          label="First name"
+          placeholder="Enter your full name"
+          required
+          @input="val => (user.firstName = val)"
+        />
+        <Input
+          :value="user.lastName"
+          label="Last name"
+          placeholder="Enter your full name"
+          required
+          @input="val => (user.lastName = val)"
+        />
       </div>
-      <Input
-        :value="user.nickname"
-        label="Nickname"
-        placeholder="Enter a nickname we should call you"
-        required
-        @input="val => (user.name = val)"
-      />
       <Input
         :value="user.username"
         label="Username"

@@ -17,7 +17,7 @@ export const mutations: MutationTree<RootState> = {
   setAuthentication(state: RootState, tokens: Tokens) {
     const currentTokens = state.tokens;
     Vue.set(state, "tokens", { ...currentTokens, ...tokens });
-    Vue.set(state, "user", decode(tokens.token));
+    Vue.set(state, "user", tokens.user);
     state.loading = false;
     state.isAuthenticated = true;
   },
