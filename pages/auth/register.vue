@@ -14,21 +14,17 @@
         <div class="row">
           <Input
             v-model="firstName"
-            type="text"
             label="First name"
             placeholder="Enter your first name"
             autocomplete="first_name"
             required
-            autofocus
           />
           <Input
             v-model="lastName"
-            type="text"
             label="Last name"
             placeholder="Enter your last name"
             autocomplete="last_name"
             required
-            autofocus
           />
         </div>
         <Input
@@ -37,6 +33,14 @@
           label="Email"
           placeholder="Enter your work email"
           autocomplete="email"
+          required
+        />
+        <Input
+          v-model="password"
+          type="password"
+          label="Password"
+          placeholder="Enter a secure password"
+          autocomplete="password"
           required
         />
         <button
@@ -75,6 +79,7 @@ export default class Login extends Vue {
   firstName = "";
   lastName = "";
   email = "";
+  password = "";
   isAuthenticated!: boolean;
   completedRegistration = false;
   private register() {
@@ -82,7 +87,8 @@ export default class Login extends Vue {
       .dispatch("auth/register", {
         email: this.email,
         lastName: this.lastName,
-        firstName: this.firstName
+        firstName: this.firstName,
+        password: this.password
       })
       .then(() => {
         this.completedRegistration = true;

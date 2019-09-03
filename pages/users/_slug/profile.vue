@@ -44,50 +44,47 @@
         @input="val => (user.username = val)"
       />
       <Select
-        :value="user.gender"
+        :value="getAttribute('gender')"
         label="Gender"
         placeholder="Select the gender you most identify with"
         :options="genders"
-        required
-        @input="val => (user.gender = val)"
+        @input="val => setAttribute('gender', val)"
       />
       <div class="row">
         <Select
-          :value="user.countryCode"
+          :value="getAttribute('countryCode')"
           label="Country"
           placeholder="Select your country"
           :options="countries"
-          required
-          @input="val => (user.countryCode = val)"
+          @input="val => setAttribute('countryCode', val)"
         />
-        <Select
-          :value="user.timezone"
+        <!-- <Select
+          :value="getAttribute('timezone')"
           label="Timezone"
           placeholder="Select your timezone"
           :options="listTimeZones"
-          required
-          @input="val => (user.timezone = val)"
-        />
+          @input="val => setAttribute('timezone', val)"
+        /> -->
       </div>
       <Select
-        :value="user.preferredLanguage"
+        :value="getAttribute('preferredLanguage')"
         label="Language"
         placeholder="Select your preferred language"
         :options="{
-          'en-us': 'English (US)'
+          'en-us': 'English (US)',
+          'nl-nl': 'Dutch (NL)'
         }"
-        required
-        @input="val => (user.preferredLanguage = val)"
+        @input="val => setAttribute('preferredLanguage', val)"
       />
       <Checkbox
-        :value="user.prefersReducedMotion"
+        :value="getAttribute('prefersReducedMotion')"
         label="I prefer reduced motion (minimize animations and movement)"
-        @input="val => (user.prefersReducedMotion = val)"
+        @input="val => setAttribute('prefersReducedMotion', val)"
       />
       <Checkbox
-        :value="user.prefersColorSchemeDark"
+        :value="getAttribute('prefersColorSchemeDark')"
         label="I prefer a dark color scheme"
-        @input="val => (user.prefersColorSchemeDark = val)"
+        @input="val => setAttribute('prefersColorSchemeDark', val)"
       />
       <button class="button">
         Update profile
@@ -175,18 +172,36 @@ export default class ManageSettings extends Vue {
       })
       .then(user => {
         this.user = { ...user };
-        this.$router.replace(`/users/${this.user.username}/profile`);
+        this.$router.replace(`/users/${this.user.id}/profile`);
       })
       .catch(() => {})
       .finally(() => (this.loading = ""));
   }
 
-  get listTimeZones() {
-    try {
-      return getAllCountries()[(this.user.countryCode || "US").toUpperCase()]
-        .timezones;
-    } catch (error) {
-      return [];
+  // get listTimeZones() {
+  //   try {
+  //     return getAllCountries()[
+  //       ((this.getAttribute("countryCode") as string) || "US").toUpperCase()
+  //     ].timezones;
+  //   } catch (error) {
+  //     return [];
+  //   }
+  // }
+
+  setAttribute(key: string, value: string) {
+    this.user.attributes = this.user.attributes || {};
+    if (this.user.attributes[key] && this.user.attributes[key].length) {
+      this.user.attributes[key][0] = value;
+    } else {
+      this.user.attributes[key] = [value];
+    }
+    console.log(this.user);
+  }
+
+  getAttribute(key: string) {
+    this.user.attributes = this.user.attributes || {};
+    if (this.user.attributes[key] && this.user.attributes[key].length) {
+      return this.user.attributes[key][0];
     }
   }
 }

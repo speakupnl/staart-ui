@@ -150,7 +150,7 @@ export const actions: ActionTree<RootState, RootState> = {
     return dispatch("getMemberships");
   },
   async createOrganization({ dispatch }, context) {
-    await this.$axios.put("/organizations", context);
+    await this.$axios.put("/groups", context);
     return dispatch("getMemberships");
   },
   async getEnable2FA({ commit }, context) {

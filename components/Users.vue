@@ -11,18 +11,18 @@
         </nuxt-link>
         <nuxt-link
           class="item item--type-parent"
-          :to="`/users/${$route.params.slug}/login/emails`"
+          :to="`/users/${$route.params.slug}/login/passwords`"
         >
           <font-awesome-icon class="nav-icon" icon="key" fixed-width />
           <span>Login</span>
         </nuxt-link>
         <nav v-if="$route.path.includes('/login/')" class="sub-nav">
-          <nuxt-link
+          <!-- <nuxt-link
             class="sub-item"
             :to="`/users/${$route.params.slug}/login/emails`"
           >
             <span>Emails</span>
-          </nuxt-link>
+          </nuxt-link> -->
           <nuxt-link
             class="sub-item"
             :to="`/users/${$route.params.slug}/login/passwords`"
@@ -43,13 +43,13 @@
           <font-awesome-icon class="nav-icon" icon="building" fixed-width />
           <span>Your teams</span>
         </nuxt-link>
-        <nuxt-link
+        <!-- <nuxt-link
           class="item"
           :to="`/users/${$route.params.slug}/access-tokens`"
         >
           <font-awesome-icon class="nav-icon" icon="code" fixed-width />
           <span>Access tokens</span>
-        </nuxt-link>
+        </nuxt-link> -->
         <nuxt-link class="item" :to="`/users/${$route.params.slug}/data`">
           <font-awesome-icon class="nav-icon" icon="database" fixed-width />
           <span>Data &amp; privacy</span>

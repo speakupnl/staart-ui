@@ -139,7 +139,7 @@ export const actions: ActionTree<RootState, RootState> = {
     const update = { ...context };
     delete update.slug;
     await this.$axios.patch(`/users/${context.slug}`, update);
-    return dispatch("getUser", context.username || context.slug);
+    return dispatch("getUser", context.id || context.slug);
   },
   async deleteUser({ commit, rootGetters }, { slug }) {
     await this.$axios.delete(`/users/${slug}`);
@@ -241,7 +241,7 @@ export const actions: ActionTree<RootState, RootState> = {
   async createOrganization({ dispatch }, context) {
     const slug = context.slug;
     delete context.slug;
-    await this.$axios.put("/organizations", context);
+    await this.$axios.put("/groups", context);
     return dispatch("getMemberships", { slug });
   },
   async deleteAccount(action, context) {
@@ -251,7 +251,7 @@ export const actions: ActionTree<RootState, RootState> = {
     return result;
   },
   async getExport(action, context) {
-    const data = (await this.$axios.get(`/users/${context.slug}/data`)).data;
+    const data = (await this.$axios.get(`/users/${context.slug}`)).data;
     download(
       JSON.stringify(data, null, 2),
       `export-${context.slug}-${new Date().getTime()}.json`,

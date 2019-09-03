@@ -29,38 +29,6 @@
         >
           Login to your account
         </button>
-        <client-only>
-          <div class="row text text--mt-1">
-            <button
-              v-for="service in ['Google', 'Apple', 'Salesforce']"
-              :key="`login_${service}`"
-              :class="
-                `button button--width-full button--size-large button--color-info button--color-brand-${service.toLowerCase()}`
-              "
-              type="button"
-              :aria-label="`Login with ${service}`"
-              data-balloon-pos="down"
-              @click="oauthLogin(service.toLowerCase())"
-            >
-              <font-awesome-icon
-                v-if="service !== 'more'"
-                class="icon"
-                :icon="['fab', service.toLowerCase()]"
-                fixed-width
-              />
-            </button>
-            <button
-              class="button button--width-full button--size-large button--color-info"
-              style="width: 20%"
-              type="button"
-              aria-label="More services"
-              data-balloon-pos="down"
-              @click="() => (showMore = true)"
-            >
-              <font-awesome-icon class="icon" icon="ellipsis-h" fixed-width />
-            </button>
-          </div>
-        </client-only>
       </form>
     </Card>
     <div class="row text text--mt-1">

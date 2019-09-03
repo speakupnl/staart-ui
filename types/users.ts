@@ -16,6 +16,9 @@ export interface User extends IdRow {
   role: number;
   gender: "m" | "f" | "n" | "x";
   profilePicture: string;
+  attributes?: {
+    [index: string]: (string | number | boolean)[];
+  }
 }
 
 export interface AccessToken extends IdRow {

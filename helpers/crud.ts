@@ -31,7 +31,14 @@ export const removeReadOnlyValues = (value: any) => {
           "stripeCustomerId",
           "updatedAt",
           "twoFactorEnabled",
-          "lastFiredAt"
+          "lastFiredAt",
+          "access",
+          "disableableCredentialTypes",
+          "enabled",
+          "emailVerified",
+          "notBefore",
+          "requiredActions",
+          "createdTimestamp"
         ].includes(key)
       ) {
         delete value[key];
