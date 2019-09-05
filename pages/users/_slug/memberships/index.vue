@@ -31,8 +31,8 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Role</th>
-              <th>Joined</th>
+              <!-- <th>Role</th>
+              <th>Joined</th> -->
               <th></th>
             </tr>
           </thead>
@@ -41,20 +41,20 @@
               v-for="(membership, index) in memberships.data"
               :key="`${membership.id}_${index}`"
             >
-              <td><Team :team="membership.group" /></td>
-              <td>{{ membershipRoles[membership.role] || membership.role }}</td>
-              <td><TimeAgo :date="membership.createdAt" /></td>
+              <td><Team :team="membership" /></td>
+              <!-- <td>{{ membershipRoles[membership.role] || membership.role }}</td> -->
+              <!-- <td><TimeAgo :date="membership.createdAt" /></td> -->
               <td class="text text--align-right">
-                <router-link
-                  :to="`/dashboard/${membership.group.username}`"
+                <!-- <router-link
+                  :to="`/dashboard/${membership.id}`"
                   aria-label="View dashboard"
                   data-balloon-pos="up"
                   class="button button--type-icon"
                 >
                   <font-awesome-icon class="icon" icon="eye" fixed-width />
-                </router-link>
+                </router-link> -->
                 <router-link
-                  :to="`/manage/${membership.group.username}/settings`"
+                  :to="`/manage/${membership.id}/settings`"
                   aria-label="Team settings"
                   data-balloon-pos="up"
                   class="button button--type-icon"
@@ -125,7 +125,7 @@
           class="button button--color-danger button--state-cta"
           @click="deleteMembership(showDelete.id)"
         >
-          Yes, leave {{ showDelete.group.name }}
+          Yes, leave {{ showDelete.name }}
         </button>
         <button type="button" class="button" @click="showDelete = null">
           No, don't leave

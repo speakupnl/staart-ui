@@ -66,14 +66,14 @@
       <div class="row">
         <Input
           :value="newUserFirstName"
-          label="Name"
+          label="First name"
           placeholder="Enter first name"
           required
           @input="val => (newUserFirstName = val)"
         />
         <Input
           :value="newUserLastName"
-          label="Name"
+          label="Last name"
           placeholder="Enter last name"
           required
           @input="val => (newUserLastName = val)"
