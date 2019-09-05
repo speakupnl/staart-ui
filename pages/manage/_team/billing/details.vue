@@ -184,7 +184,7 @@ export default class ManageSettings extends Vue {
   private created() {
     this.billing = {
       ...this.$store.getters["manage/billing"](this.$route.params.team),
-      address: { ...emptyAddress, country: this.user.countryCode.toUpperCase() }
+      address: { ...emptyAddress, country: "NL" }
     };
     const countries = {};
     const allCountries = getAllCountries();
@@ -211,7 +211,7 @@ export default class ManageSettings extends Vue {
             ? { ...billing.address }
             : {
                 ...emptyAddress,
-                country: this.user.countryCode.toUpperCase()
+                country: "NL"
               }
         };
       })
@@ -223,7 +223,7 @@ export default class ManageSettings extends Vue {
             name: this.user.name,
             address: {
               ...emptyAddress,
-              country: this.user.countryCode.toUpperCase()
+              country: "NL"
             }
           };
         }
@@ -248,7 +248,7 @@ export default class ManageSettings extends Vue {
           ...this.$store.getters["manage/billing"](this.$route.params.team),
           address: {
             ...emptyAddress,
-            country: this.user.countryCode.toUpperCase()
+            country: "NL"
           }
         };
       })

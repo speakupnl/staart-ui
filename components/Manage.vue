@@ -17,7 +17,7 @@
             class="sub-item"
             :to="`/manage/${$route.params.team}/developer/api-keys`"
           >
-            <span>API keys</span>
+            <span>Applications</span>
           </nuxt-link>
           <!-- <nuxt-link
             class="sub-item"

@@ -11,7 +11,7 @@
           >
             <font-awesome-icon class="icon" icon="arrow-left" fixed-width />
           </nuxt-link>
-          <h1>API key</h1>
+          <h1>Application</h1>
         </div>
         <div class="text text--align-right">
           <button
@@ -30,8 +30,8 @@
         </div>
       </div>
       <div v-if="apiKey && apiKey.jwtApiKey">
-        <h2>Use API key</h2>
-        <Input label="API key" :value="apiKey.jwtApiKey" disabled />
+        <h2>Use Application</h2>
+        <Input label="Application" :value="apiKey.jwtApiKey" disabled />
         <button class="button" @click="copy(apiKey.jwtApiKey)">
           <font-awesome-icon class="icon icon--mr-1" icon="copy" />
           <span v-if="copied">Copied</span>
@@ -48,14 +48,14 @@
           <span>Delete</span>
         </button>
         <div class="text text--mt-2">
-          <h2>Edit API key</h2>
+          <h2>Edit Application</h2>
           <form
             v-meta-ctrl-enter="() => (showUpdate = true)"
             @submit.prevent="() => (showUpdate = true)"
           >
             <Input
               label="Name"
-              placeholder="Enter a name for this API key"
+              placeholder="Enter a name for this Application"
               :value="apiKey.name"
               :disabled="readOnly"
               @input="val => (apiKey.name = val)"
@@ -81,7 +81,7 @@
               :disabled="readOnly"
               @input="val => (apiKey.referrerRestrictions = val)"
             />
-            <button v-if="!readOnly" class="button">Update API key</button>
+            <button v-if="!readOnly" class="button">Update Application</button>
           </form>
         </div>
       </div>
@@ -89,16 +89,16 @@
     </div>
     <transition name="modal">
       <Confirm v-if="showDelete" :on-close="() => (showDelete = false)">
-        <h2>Are you sure you want to delete this API key?</h2>
+        <h2>Are you sure you want to delete this Application?</h2>
         <p>
-          Deleting an API key is not reversible, and you'll need to update any
-          apps using this key.
+          Deleting an Application is not reversible, and you'll need to update
+          any apps using this key.
         </p>
         <button
           class="button button--color-danger button--state-cta"
           @click="deleteApiKey(showDelete.id)"
         >
-          Yes, delete API key
+          Yes, delete Application
         </button>
         <button type="button" class="button" @click="showDelete = false">
           No, don't delete
@@ -107,17 +107,19 @@
     </transition>
     <transition name="modal">
       <Confirm v-if="showUpdate" :on-close="() => (showUpdate = false)">
-        <h2>Are you sure you want to update and regenerate this API key?</h2>
+        <h2>
+          Are you sure you want to update and regenerate this Application?
+        </h2>
         <p>
-          Updating your API key will generate a new API key, so you'll have to
-          update it wherever you're using it.
+          Updating your Application will generate a new Application, so you'll
+          have to update it wherever you're using it.
         </p>
-        <p>The current API key will stop working instantly.</p>
+        <p>The current Application will stop working instantly.</p>
         <button
           class="button button--color-primary button--state-cta"
           @click="updateApiKey"
         >
-          Yes, regenerate API key
+          Yes, regenerate Application
         </button>
         <button type="button" class="button" @click="showUpdate = false">
           No, don't update
@@ -211,7 +213,7 @@ export default class ManageSettings extends Vue {
   }
 
   private load() {
-    this.loading = "Loading your API keys";
+    this.loading = "Loading your Applications";
     this.$store
       .dispatch("manage/getApiKey", {
         team: this.$route.params.team,
@@ -232,7 +234,7 @@ export default class ManageSettings extends Vue {
 
   private updateApiKey() {
     this.showUpdate = false;
-    this.loading = "Updating your API key";
+    this.loading = "Updating your Application";
     const apiKey = { ...this.apiKey };
     if (apiKey) {
       ["jwtApiKey", "groupId", "expiresAt", "createdAt", "updatedAt"].forEach(
@@ -258,7 +260,7 @@ export default class ManageSettings extends Vue {
 
   private deleteApiKey(key: number) {
     this.showDelete = false;
-    this.loading = "Deleting your API key";
+    this.loading = "Deleting your Application";
     this.$store
       .dispatch("manage/deleteApiKey", {
         team: this.$route.params.team,

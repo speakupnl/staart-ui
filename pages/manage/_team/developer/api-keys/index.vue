@@ -2,7 +2,7 @@
   <main>
     <div>
       <div class="row">
-        <h1>API keys</h1>
+        <h1>Applications</h1>
         <div class="text text--align-right">
           <button
             aria-label="Refresh"
@@ -21,9 +21,9 @@
       </div>
       <LargeMessage
         v-if="!loading && (!apiKeys || !apiKeys.data || !apiKeys.data.length)"
-        heading="No API keys yet"
+        heading="No applications yet"
         img="undraw_software_engineer_lvl5.svg"
-        text="Create an API key below"
+        text="Create an application below"
       />
       <div v-else-if="apiKeys && apiKeys.data && apiKeys.data.length">
         <table class="table">
@@ -41,7 +41,7 @@
               v-for="(apiKey, index) in apiKeys.data"
               :key="`${apiKey.id}_${index}`"
             >
-              <td>{{ apiKey.name || "Unnamed API key" }}</td>
+              <td>{{ apiKey.name || "Unnamed application" }}</td>
               <td v-if="apiKey.scopes">
                 {{ apiKey.scopes.split(",").length }} API{{
                   apiKey.scopes.split(",").length === 1 ? "" : "s"
@@ -107,7 +107,7 @@
             :disabled="loadingMore"
             @click="loadMore"
           >
-            <span>Load more API keys</span>
+            <span>Load more applications</span>
             <font-awesome-icon
               v-if="!loadingMore"
               class="icon"
@@ -127,9 +127,9 @@
         v-if="loggedInMembership !== 3 && loggedInMembership !== 4"
         class="text text--mt-2"
       >
-        <h2>Create API key</h2>
+        <h2>Create application</h2>
         <p>
-          You can use API keys to programmatically access Staart in your
+          You can use applications to programmatically access Staart in your
           applications.
         </p>
         <form @submit.prevent="createApiKey">
@@ -141,24 +141,25 @@
             @input="val => (newScopes = val)"
           />
           <p class="text text--color-muted text--size-small">
-            You can add IP and referrer restrictions after creating the API key.
+            You can add IP and referrer restrictions after creating the
+            application.
           </p>
-          <button class="button">Create API key</button>
+          <button class="button">Create application</button>
         </form>
       </div>
     </div>
     <transition name="modal">
       <Confirm v-if="showDelete" :on-close="() => (showDelete = null)">
-        <h2>Are you sure you want to delete this API key?</h2>
+        <h2>Are you sure you want to delete this application?</h2>
         <p>
-          Deleting an API key is not reversible, and you'll need to update any
-          apps using this key.
+          Deleting an application is not reversible, and you'll need to update
+          any apps using this key.
         </p>
         <button
           class="button button--color-danger button--state-cta"
           @click="deleteApiKey(showDelete.id)"
         >
-          Yes, delete API key
+          Yes, delete application
         </button>
         <button type="button" class="button" @click="showDelete = null">
           No, don't delete
@@ -228,7 +229,7 @@ export default class ManageSettings extends Vue {
   }
 
   private load() {
-    this.loading = "Loading your API keys";
+    this.loading = "Loading your applications";
     this.$store
       .dispatch("manage/getApiKeys", { team: this.$route.params.team })
       .then(apiKeys => {
@@ -263,7 +264,7 @@ export default class ManageSettings extends Vue {
   }
 
   private createApiKey() {
-    this.loading = "Creating your API key";
+    this.loading = "Creating your application";
     this.$store
       .dispatch("manage/createApiKey", {
         team: this.$route.params.team,
@@ -283,7 +284,7 @@ export default class ManageSettings extends Vue {
 
   private deleteApiKey(key: number) {
     this.showDelete = null;
-    this.loading = "Deleting your API key";
+    this.loading = "Deleting your application";
     this.$store
       .dispatch("manage/deleteApiKey", {
         team: this.$route.params.team,
