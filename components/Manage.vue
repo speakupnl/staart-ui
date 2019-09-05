@@ -19,7 +19,7 @@
           >
             <span>API keys</span>
           </nuxt-link>
-          <nuxt-link
+          <!-- <nuxt-link
             class="sub-item"
             :to="`/manage/${$route.params.team}/developer/webhooks`"
           >
@@ -30,7 +30,7 @@
             :to="`/manage/${$route.params.team}/developer/logs`"
           >
             <span>API logs</span>
-          </nuxt-link>
+          </nuxt-link> -->
         </nav>
         <nuxt-link
           class="item item--type-parent"
@@ -54,7 +54,6 @@
           </nuxt-link>
         </nav>
         <nuxt-link
-          v-if="loggedInMembership !== 3 && loggedInMembership !== 4"
           class="item item--type-parent"
           :to="`/manage/${$route.params.team}/billing/details`"
         >

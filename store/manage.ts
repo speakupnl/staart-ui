@@ -6,7 +6,7 @@ import { RootState, Organization, emptyPagination } from "~/types/manage";
 export const state = (): RootState => ({
   memberships: {},
   isDownloading: false,
-  organizations: {},
+  groups: {},
   billing: {},
   loggedInMembership: {},
   subscriptions: {},
@@ -26,9 +26,9 @@ export const state = (): RootState => ({
 
 export const mutations: MutationTree<RootState> = {
   setOrganization(state: RootState, organization: Organization): void {
-    const organizations = state.organizations;
-    organizations[organization.id] = organization;
-    Vue.set(state, "organizations", organizations);
+    const groups = state.groups;
+    groups[organization.id] = organization;
+    Vue.set(state, "groups", groups);
   },
   setLoggedInMembership(state: RootState, { team, role }) {
     const loggedInMembership = state.loggedInMembership;
@@ -199,7 +199,7 @@ export const mutations: MutationTree<RootState> = {
   },
   clearAll(state: RootState): void {
     const currentState = { ...state };
-    currentState.organizations = {};
+    currentState.groups = {};
     currentState.billing = {};
     currentState.memberships = {};
     delete currentState.membership;
@@ -224,7 +224,7 @@ export const mutations: MutationTree<RootState> = {
 export const actions: ActionTree<RootState, RootState> = {
   async getOrganization({ commit }, context) {
     const org: Organization = (await this.$axios.get(
-      `/organizations/${context}`
+      `/groups/${context}`
     )).data;
     commit("setOrganization", org);
     return org;
@@ -232,15 +232,15 @@ export const actions: ActionTree<RootState, RootState> = {
   async updateOrganization({ dispatch }, context) {
     const update = { ...context };
     delete update.team;
-    await this.$axios.patch(`/organizations/${context.team}`, update);
+    await this.$axios.patch(`/groups/${context.team}`, update);
     return dispatch("getOrganization", context.username || context.team);
   },
   async deleteOrganization({ commit, rootGetters }, { team }) {
-    await this.$axios.delete(`/organizations/${team}`);
+    await this.$axios.delete(`/groups/${team}`);
     commit("clearAll");
   },
   async getExport({ commit, rootGetters }, { team }) {
-    const data = (await this.$axios.get(`/organizations/${team}/data`)).data;
+    const data = (await this.$axios.get(`/groups/${team}`)).data;
     download(
       JSON.stringify(data, null, 2),
       `export-${new Date().getTime()}.json`,
@@ -249,7 +249,7 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async getMembers({ commit }, { team, start = 0 }) {
     const members = (await this.$axios.get(
-      `/organizations/${team}/memberships?start=${start}`
+      `/groups/${team}/memberships?start=${start}`
     )).data;
     commit("setMembers", { team, members, start, next: members.next });
     return members;
@@ -258,28 +258,28 @@ export const actions: ActionTree<RootState, RootState> = {
     const toInvite = { ...context };
     delete toInvite.team;
     await this.$axios.put(
-      `/organizations/${context.team}/memberships`,
+      `/groups/${context.team}/memberships`,
       toInvite
     );
     return dispatch("getMembers", { team: context.team });
   },
   async deleteMembership({ dispatch }, { id, team }) {
-    await this.$axios.delete(`/organizations/${team}/memberships/${id}`);
+    await this.$axios.delete(`/groups/${team}/memberships/${id}`);
     return dispatch("getMembers", { team });
   },
   async getMembership(actions, { id, team }) {
-    return (await this.$axios.get(`/organizations/${team}/memberships/${id}`)).data;
+    return (await this.$axios.get(`/groups/${team}/memberships/${id}`)).data;
   },
   async updateMembership({ dispatch }, context) {
     const data = { ...context };
     delete data.id;
     delete data.team;
-    await this.$axios.patch(`/organizations/${context.team}/memberships/${context.id}`, data);
+    await this.$axios.patch(`/groups/${context.team}/memberships/${context.id}`, data);
     return dispatch("getMembership", { team: context.team, id: context.id });
   },
   async getBilling({ commit }, team) {
     const billing: any = (await this.$axios.get(
-      `/organizations/${team}/billing`
+      `/groups/${team}/billing`
     )).data;
     commit("setBilling", { billing, team });
     return billing;
@@ -287,26 +287,26 @@ export const actions: ActionTree<RootState, RootState> = {
   async updateBilling({ dispatch }, context) {
     const data = { ...context };
     delete data.team;
-    await this.$axios.patch(`/organizations/${context.team}/billing`, data);
+    await this.$axios.patch(`/groups/${context.team}/billing`, data);
     return dispatch("getBilling", context.team);
   },
   async getInvoices({ commit }, { team, start = 0 }) {
     const invoices: any = (await this.$axios.get(
-      `/organizations/${team}/invoices?start=${start}`
+      `/groups/${team}/invoices?start=${start}`
     )).data;
     commit("setInvoices", { team, invoices, start, next: invoices.next });
     return invoices;
   },
   async getInvoice({ commit }, { team, id }) {
     const invoice: any = (await this.$axios.get(
-      `/organizations/${team}/invoices/${id}`
+      `/groups/${team}/invoices/${id}`
     )).data;
     commit("setInvoice", { team, invoice, id });
     return invoice;
   },
   async getSubscriptions({ commit }, { team, start = 0 }) {
     const subscriptions: any = (await this.$axios.get(
-      `/organizations/${team}/subscriptions?start=${start}`
+      `/groups/${team}/subscriptions?start=${start}`
     )).data;
     commit("setSubscriptions", {
       team,
@@ -318,7 +318,7 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async getSubscription({ commit }, { team, id }) {
     const subscription: any = (await this.$axios.get(
-      `/organizations/${team}/subscriptions/${id}`
+      `/groups/${team}/subscriptions/${id}`
     )).data;
     commit("setSubscription", { team, subscription, id });
     return subscription;
@@ -328,31 +328,31 @@ export const actions: ActionTree<RootState, RootState> = {
     delete data.id;
     delete data.team;
     await this.$axios.patch(
-      `/organizations/${context.team}/subscriptions/${context.id}`,
+      `/groups/${context.team}/subscriptions/${context.id}`,
       data
     );
     return dispatch("getSubscription", { team: context.team, id: context.id });
   },
   async createSubscription({ dispatch }, { team, plan }) {
-    await this.$axios.put(`/organizations/${team}/subscriptions`, { plan });
+    await this.$axios.put(`/groups/${team}/subscriptions`, { plan });
     return dispatch("getSubscriptions", { team });
   },
   async getPricingPlans({ commit }, context) {
     const subscriptions: any = (await this.$axios.get(
-      `/organizations/${context}/pricing`
+      `/groups/${context}/pricing`
     )).data;
     commit("setPricingPlans", subscriptions);
   },
   async getSources({ commit }, { team, start = 0 }) {
     const sources: any = (await this.$axios.get(
-      `/organizations/${team}/sources?start=${start}`
+      `/groups/${team}/sources?start=${start}`
     )).data;
     commit("setSources", { team, sources, start, next: sources.next });
     return sources;
   },
   async getSource({ commit }, { team, id }) {
     const source: any = (await this.$axios.get(
-      `/organizations/${team}/sources/${id}`
+      `/groups/${team}/sources/${id}`
     )).data;
     commit("setSource", { team, source, id });
     return source;
@@ -360,12 +360,12 @@ export const actions: ActionTree<RootState, RootState> = {
   async createSource({ dispatch }, context) {
     const data = { ...context };
     delete data.team;
-    await this.$axios.put(`/organizations/${context.team}/sources`, data);
+    await this.$axios.put(`/groups/${context.team}/sources`, data);
     return dispatch("getSources", { team: context.team });
   },
   async deleteSource({ dispatch }, context) {
     await this.$axios.delete(
-      `/organizations/${context.team}/sources/${context.id}`
+      `/groups/${context.team}/sources/${context.id}`
     );
     return dispatch("getSources", { team: context.team });
   },
@@ -374,28 +374,28 @@ export const actions: ActionTree<RootState, RootState> = {
     delete data.team;
     delete data.id;
     await this.$axios.patch(
-      `/organizations/${context.team}/sources/${context.id}`,
+      `/groups/${context.team}/sources/${context.id}`,
       data
     );
     return dispatch("getSource", { team: context.team, id: context.id });
   },
   async getApiKeys({ commit }, { team, start = 0 }) {
     const apiKeys: any = (await this.$axios.get(
-      `/organizations/${team}/api-keys?start=${start}`
+      `/groups/${team}/api-keys?start=${start}`
     )).data;
     commit("setApiKeys", { team, apiKeys, start, next: apiKeys.next });
     return apiKeys;
   },
   async getApiKey({ commit }, { team, id }) {
     const apiKey: any = (await this.$axios.get(
-      `/organizations/${team}/api-keys/${id}`
+      `/groups/${team}/api-keys/${id}`
     )).data;
     commit("setApiKey", { team, apiKey, id });
     return apiKey;
   },
   async getApiKeyLogs({ commit }, { team, id, range, from }) {
     const apiKeyLogs: any = (await this.$axios.get(
-      `/organizations/${team}/api-keys/${id}/logs?range=${range}&from=${from}`
+      `/groups/${team}/api-keys/${id}/logs?range=${range}&from=${from}`
     )).data;
     commit("setApiKeyLogs", { team, apiKeyLogs, range, id, from });
     return apiKeyLogs;
@@ -403,12 +403,12 @@ export const actions: ActionTree<RootState, RootState> = {
   async createApiKey({ dispatch }, context) {
     const data = { ...context };
     delete data.team;
-    await this.$axios.put(`/organizations/${context.team}/api-keys`, data);
+    await this.$axios.put(`/groups/${context.team}/api-keys`, data);
     return dispatch("getApiKeys", { team: context.team });
   },
   async deleteApiKey({ dispatch }, context) {
     await this.$axios.delete(
-      `/organizations/${context.team}/api-keys/${context.id}`
+      `/groups/${context.team}/api-keys/${context.id}`
     );
     return dispatch("getApiKeys", { team: context.team });
   },
@@ -417,21 +417,21 @@ export const actions: ActionTree<RootState, RootState> = {
     delete data.team;
     delete data.id;
     await this.$axios.patch(
-      `/organizations/${context.team}/api-keys/${context.id}`,
+      `/groups/${context.team}/api-keys/${context.id}`,
       data
     );
     return dispatch("getApiKey", context);
   },
   async getDomains({ commit }, { team, start = 0 }) {
     const domains: any = (await this.$axios.get(
-      `/organizations/${team}/domains?start=${start}`
+      `/groups/${team}/domains?start=${start}`
     )).data;
     commit("setDomains", { team, domains, start, next: domains.next });
     return domains;
   },
   async getDomain({ commit }, { team, id }) {
     const domain: any = (await this.$axios.get(
-      `/organizations/${team}/domains/${id}`
+      `/groups/${team}/domains/${id}`
     )).data;
     commit("setDomain", { team, domain, id });
     return domain;
@@ -439,12 +439,12 @@ export const actions: ActionTree<RootState, RootState> = {
   async createDomain({ dispatch }, context) {
     const data = { ...context };
     delete data.team;
-    await this.$axios.put(`/organizations/${context.team}/domains`, data);
+    await this.$axios.put(`/groups/${context.team}/domains`, data);
     return dispatch("getDomains", { team: context.team });
   },
   async deleteDomain({ dispatch }, context) {
     await this.$axios.delete(
-      `/organizations/${context.team}/domains/${context.id}`
+      `/groups/${context.team}/domains/${context.id}`
     );
     return dispatch("getDomains", { team: context.team });
   },
@@ -453,7 +453,7 @@ export const actions: ActionTree<RootState, RootState> = {
     delete data.team;
     delete data.id;
     await this.$axios.patch(
-      `/organizations/${context.team}/domains/${context.id}`,
+      `/groups/${context.team}/domains/${context.id}`,
       data
     );
     return dispatch("getDomain", context);
@@ -463,21 +463,21 @@ export const actions: ActionTree<RootState, RootState> = {
     delete data.team;
     delete data.id;
     await this.$axios.post(
-      `/organizations/${context.team}/domains/${context.id}/verify`,
+      `/groups/${context.team}/domains/${context.id}/verify`,
       data
     );
     return dispatch("getDomain", context);
   },
   async getWebhooks({ commit }, { team, start = 0 }) {
     const webhooks: any = (await this.$axios.get(
-      `/organizations/${team}/webhooks?start=${start}`
+      `/groups/${team}/webhooks?start=${start}`
     )).data;
     commit("setWebhooks", { team, webhooks, start, next: webhooks.next });
     return webhooks;
   },
   async getWebhook({ commit }, { team, id }) {
     const webhook: any = (await this.$axios.get(
-      `/organizations/${team}/webhooks/${id}`
+      `/groups/${team}/webhooks/${id}`
     )).data;
     commit("setWebhook", { team, webhook, id });
     return webhook;
@@ -485,12 +485,12 @@ export const actions: ActionTree<RootState, RootState> = {
   async createWebhook({ dispatch }, context) {
     const data = { ...context };
     delete data.team;
-    await this.$axios.put(`/organizations/${context.team}/webhooks`, data);
+    await this.$axios.put(`/groups/${context.team}/webhooks`, data);
     return dispatch("getWebhooks", { team: context.team });
   },
   async deleteWebhook({ dispatch }, context) {
     await this.$axios.delete(
-      `/organizations/${context.team}/webhooks/${context.id}`
+      `/groups/${context.team}/webhooks/${context.id}`
     );
     return dispatch("getWebhooks", { team: context.team });
   },
@@ -499,7 +499,7 @@ export const actions: ActionTree<RootState, RootState> = {
     delete data.team;
     delete data.id;
     await this.$axios.patch(
-      `/organizations/${context.team}/webhooks/${context.id}`,
+      `/groups/${context.team}/webhooks/${context.id}`,
       data
     );
     return dispatch("getWebhook", context);
@@ -508,7 +508,7 @@ export const actions: ActionTree<RootState, RootState> = {
     const org = rootGetters["auth/activeOrganization"];
     const organizationId = org.organizationId;
     const events: any = (await this.$axios.get(
-      `/organizations/${organizationId}/events`
+      `/groups/${organizationId}/events`
     )).data;
     commit("setRecentEvents", events);
   }
@@ -542,5 +542,5 @@ export const getters: GetterTree<RootState, RootState> = {
     state.devWebhook[team] && state.devWebhook[team][webhook],
   apiKeyLogs: state => (team: string, apiKeyLogs: string) =>
     state.apiKeyLogs[team] && state.apiKeyLogs[team][apiKeyLogs],
-  organization: state => (team: string) => (state.organizations)[team]
+  organization: state => (team: string) => (state.groups)[team]
 };

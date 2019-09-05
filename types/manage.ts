@@ -1,7 +1,7 @@
 import { subscriptions, invoices, sources } from "stripe";
 import { IdRow, Row, Paginated } from "./root";
 
-export interface Organization extends IdRow {
+export interface Group extends IdRow {
   name?: string;
   stripeCustomerId?: string;
   username: string;
@@ -10,7 +10,7 @@ export interface Organization extends IdRow {
 }
 
 export interface Membership extends IdRow {
-  organization: Organization;
+  group: Group;
 }
 export interface ApiKey extends IdRow {
   name?: string;
@@ -69,8 +69,8 @@ export interface Billing {
   address?: Address;
 }
 
-export interface OrganizationsKV {
-  [index: string]: Organization;
+export interface GroupsKV {
+  [index: string]: Group;
 }
 export interface MembershipsKV {
   [index: string]: Members;
@@ -139,7 +139,7 @@ export interface LoggedInMembershipsKV {
 export interface RootState {
   membership?: Membership;
   loggedInMembership: LoggedInMembershipsKV;
-  organizations: OrganizationsKV;
+  groups: GroupsKV;
   memberships: MembershipsKV;
   subscriptions: SubscriptionsKV;
   subscription: SingleSubscriptionKV;
@@ -160,7 +160,7 @@ export interface RootState {
   isDownloading: boolean;
 }
 
-export const emptyOrganization: Organization = {
+export const emptyGroup: Group = {
   id: 0,
   createdAt: new Date().toString(),
   updatedAt: new Date().toString(),

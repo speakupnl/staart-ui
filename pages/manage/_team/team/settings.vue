@@ -27,13 +27,6 @@
         required
         @input="val => (organization.name = val)"
       />
-      <Input
-        :value="organization.username"
-        label="Team username"
-        placeholder="Enter a unique username"
-        help="Changing your username can have unintended side effects"
-        @input="val => (organization.username = val)"
-      />
       <Checkbox
         :value="organization.autoJoinDomain"
         label="Allow users with verified domain emails to automatically join this team"
@@ -127,9 +120,7 @@ export default class ManageSettings extends Vue {
       })
       .then(org => {
         this.organization = { ...org };
-        this.$router.replace(
-          `/manage/${this.organization.username}/team/settings`
-        );
+        this.$router.replace(`/manage/${this.organization.id}/team/settings`);
       })
       .catch(() => {})
       .finally(() => (this.loading = ""));

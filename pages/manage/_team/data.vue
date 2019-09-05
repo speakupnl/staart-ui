@@ -1,8 +1,8 @@
 <template>
   <Loading v-if="loading" :message="loading" />
   <main v-else>
-    <div class="row">
-      <h2>Security settings</h2>
+    <!-- <div class="row">
+      <h1>Security settings</h1>
       <div class="text text--align-right">
         <button
           aria-label="Refresh"
@@ -18,8 +18,8 @@
           />
         </button>
       </div>
-    </div>
-    <form v-meta-ctrl-enter="save" @submit.prevent="save">
+    </div> -->
+    <!-- <form v-meta-ctrl-enter="save" @submit.prevent="save">
       <CommaList
         label="IP restrictions"
         :value="organization.ipRestrictions"
@@ -34,7 +34,7 @@
       <button class="button">
         Update security settings
       </button>
-    </form>
+    </form> -->
     <h2>Export data</h2>
     <p>
       You can download an export of your data in JSON format. This will help you
@@ -135,14 +135,14 @@ export default class ManageSettings extends Vue {
   }
 
   private load() {
-    this.loading = "Loading organization details";
-    this.$store
-      .dispatch("manage/getOrganization", this.$route.params.team)
-      .then(org => {
-        this.organization = { ...org };
-      })
-      .catch(() => {})
-      .finally(() => (this.loading = ""));
+    // this.loading = "Loading organization details";
+    // this.$store
+    //   .dispatch("manage/getOrganization", this.$route.params.team)
+    //   .then(org => {
+    //     this.organization = { ...org };
+    //   })
+    //   .catch(() => {})
+    //   .finally(() => (this.loading = ""));
   }
 
   private mounted() {
