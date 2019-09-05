@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="row">
-      <h1>Organizations</h1>
+      <h1>Groups</h1>
       <div class="text text--align-right">
         <button
           aria-label="Refresh"
@@ -18,7 +18,7 @@
         </button>
       </div>
     </div>
-    <div v-if="organizations && organizations.data">
+    <div v-if="groups && groups.data">
       <table class="table">
         <thead>
           <tr>
@@ -29,14 +29,14 @@
         </thead>
         <tbody>
           <tr
-            v-for="(organization, index) in organizations.data"
-            :key="`${organization.id}_${index}`"
+            v-for="(group, index) in groups.data"
+            :key="`${group.id}_${index}`"
           >
-            <td><Team :team="organization" /></td>
-            <td><TimeAgo :date="organization.createdAt" /></td>
+            <td><Team :team="group" /></td>
+            <td><TimeAgo :date="group.createdAt" /></td>
             <td class="text text--align-right">
               <router-link
-                :to="`/dashboard/${organization.username || organization.id}`"
+                :to="`/dashboard/${group.username || group.id}`"
                 aria-label="View"
                 data-balloon-pos="up"
                 class="button button--type-icon"
@@ -44,9 +44,7 @@
                 <font-awesome-icon class="icon" icon="eye" fixed-width />
               </router-link>
               <router-link
-                :to="
-                  `/manage/${organization.username || organization.id}/settings`
-                "
+                :to="`/manage/${group.username || group.id}/settings`"
                 aria-label="Edit"
                 data-balloon-pos="up"
                 class="button button--type-icon"
@@ -59,12 +57,12 @@
       </table>
       <div class="pagination text text--align-center">
         <button
-          v-if="organizations && organizations.hasMore"
+          v-if="groups && groups.hasMore"
           class="button"
           :disabled="loadingMore"
           @click="loadMore"
         >
-          <span>Load more organizations</span>
+          <span>Load more groups</span>
           <font-awesome-icon
             v-if="!loadingMore"
             class="icon"
@@ -106,13 +104,13 @@ library.add(faArrowDown, faSync, faEye, faCog);
     FontAwesomeIcon
   }
 })
-export default class AdminOrganizations extends Vue {
-  organizations = emptyPagination;
+export default class AdminGroups extends Vue {
+  groups = emptyPagination;
   loading = "";
   loadingMore = false;
 
   private created() {
-    this.organizations = { ...this.$store.getters["admin/organizations"]() };
+    this.groups = { ...this.$store.getters["admin/groups"]() };
   }
 
   private mounted() {
@@ -120,11 +118,11 @@ export default class AdminOrganizations extends Vue {
   }
 
   private load() {
-    this.loading = "Loading your organizations";
+    this.loading = "Loading your groups";
     this.$store
-      .dispatch("admin/getOrganizations", {})
-      .then(organizations => {
-        this.organizations = { ...organizations };
+      .dispatch("admin/getGroups", {})
+      .then(groups => {
+        this.groups = { ...groups };
       })
       .catch(error => {
         throw new Error(error);
@@ -135,12 +133,12 @@ export default class AdminOrganizations extends Vue {
   private loadMore() {
     this.loadingMore = true;
     this.$store
-      .dispatch("admin/getOrganizations", {
-        start: this.$store.state.admin.organizations.next
+      .dispatch("admin/getGroups", {
+        start: this.$store.state.admin.groups.next
       })
       .then(() => {
-        this.organizations = {
-          ...this.$store.getters["admin/organizations"]()
+        this.groups = {
+          ...this.$store.getters["admin/groups"]()
         };
       })
       .catch(error => {

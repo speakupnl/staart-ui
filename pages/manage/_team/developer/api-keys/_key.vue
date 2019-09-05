@@ -235,13 +235,9 @@ export default class ManageSettings extends Vue {
     this.loading = "Updating your API key";
     const apiKey = { ...this.apiKey };
     if (apiKey) {
-      [
-        "jwtApiKey",
-        "organizationId",
-        "expiresAt",
-        "createdAt",
-        "updatedAt"
-      ].forEach(k => delete apiKey[k]);
+      ["jwtApiKey", "groupId", "expiresAt", "createdAt", "updatedAt"].forEach(
+        k => delete apiKey[k]
+      );
     }
     this.$store
       .dispatch("manage/updateApiKey", {

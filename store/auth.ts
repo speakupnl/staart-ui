@@ -26,7 +26,7 @@ export const mutations: MutationTree<RootState> = {
     state.loading = false;
     state.isAuthenticated = false;
     state.notifications = [];
-    delete state.activeOrganization;
+    delete state.activeGroup;
     delete state.user;
   },
   startLoading(state: RootState) {
@@ -42,8 +42,8 @@ export const mutations: MutationTree<RootState> = {
     Vue.set(state, "tokens", { twoFactorToken });
     state.loading = false;
   },
-  setActiveOrganization(state: RootState, team: string) {
-    Vue.set(state, "activeOrganization", team);
+  setActiveGroup(state: RootState, team: string) {
+    Vue.set(state, "activeGroup", team);
   }
 };
 
@@ -166,6 +166,6 @@ export const getters: GetterTree<RootState, RootState> = {
   user: state => state.user,
   isLoading: state => state.loading,
   notifications: state => state.notifications,
-  activeOrganization: state => state.activeOrganization,
+  activeGroup: state => state.activeGroup,
   isAuthenticated: state => state.isAuthenticated
 };

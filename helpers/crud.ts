@@ -27,7 +27,7 @@ export const removeReadOnlyValues = (value: any) => {
           "id",
           "jwtApiKey",
           "userId",
-          "organizationId",
+          "groupId",
           "stripeCustomerId",
           "updatedAt",
           "twoFactorEnabled",

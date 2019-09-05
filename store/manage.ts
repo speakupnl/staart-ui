@@ -1,7 +1,7 @@
 import { MutationTree, ActionTree, GetterTree } from "vuex";
 import download from "downloadjs";
 import Vue from "vue";
-import { RootState, Organization, emptyPagination } from "~/types/manage";
+import { RootState, Group, emptyPagination } from "~/types/manage";
 
 export const state = (): RootState => ({
   memberships: {},
@@ -25,9 +25,9 @@ export const state = (): RootState => ({
 });
 
 export const mutations: MutationTree<RootState> = {
-  setOrganization(state: RootState, organization: Organization): void {
+  setGroup(state: RootState, group: Group): void {
     const groups = state.groups;
-    groups[organization.id] = organization;
+    groups[group.id] = group;
     Vue.set(state, "groups", groups);
   },
   setLoggedInMembership(state: RootState, { team, role }) {
@@ -222,20 +222,20 @@ export const mutations: MutationTree<RootState> = {
 };
 
 export const actions: ActionTree<RootState, RootState> = {
-  async getOrganization({ commit }, context) {
-    const org: Organization = (await this.$axios.get(
+  async getGroup({ commit }, context) {
+    const org: Group = (await this.$axios.get(
       `/groups/${context}`
     )).data;
-    commit("setOrganization", org);
+    commit("setGroup", org);
     return org;
   },
-  async updateOrganization({ dispatch }, context) {
+  async updateGroup({ dispatch }, context) {
     const update = { ...context };
     delete update.team;
     await this.$axios.patch(`/groups/${context.team}`, update);
-    return dispatch("getOrganization", context.username || context.team);
+    return dispatch("getGroup", context.username || context.team);
   },
-  async deleteOrganization({ commit, rootGetters }, { team }) {
+  async deleteGroup({ commit, rootGetters }, { team }) {
     await this.$axios.delete(`/groups/${team}`);
     commit("clearAll");
   },
@@ -249,7 +249,7 @@ export const actions: ActionTree<RootState, RootState> = {
   },
   async getMembers({ commit }, { team, start = 0 }) {
     const members = (await this.$axios.get(
-      `/groups/${team}/memberships?start=${start}`
+      `/groups/${team}/members?start=${start}`
     )).data;
     commit("setMembers", { team, members, start, next: members.next });
     return members;
@@ -258,23 +258,23 @@ export const actions: ActionTree<RootState, RootState> = {
     const toInvite = { ...context };
     delete toInvite.team;
     await this.$axios.put(
-      `/groups/${context.team}/memberships`,
+      `/groups/${context.team}/members`,
       toInvite
     );
     return dispatch("getMembers", { team: context.team });
   },
   async deleteMembership({ dispatch }, { id, team }) {
-    await this.$axios.delete(`/groups/${team}/memberships/${id}`);
+    await this.$axios.delete(`/groups/${team}/members/${id}`);
     return dispatch("getMembers", { team });
   },
   async getMembership(actions, { id, team }) {
-    return (await this.$axios.get(`/groups/${team}/memberships/${id}`)).data;
+    return (await this.$axios.get(`/groups/${team}/members/${id}`)).data;
   },
   async updateMembership({ dispatch }, context) {
     const data = { ...context };
     delete data.id;
     delete data.team;
-    await this.$axios.patch(`/groups/${context.team}/memberships/${context.id}`, data);
+    await this.$axios.patch(`/groups/${context.team}/members/${context.id}`, data);
     return dispatch("getMembership", { team: context.team, id: context.id });
   },
   async getBilling({ commit }, team) {
@@ -505,10 +505,10 @@ export const actions: ActionTree<RootState, RootState> = {
     return dispatch("getWebhook", context);
   },
   async getEvents({ commit, rootGetters }) {
-    const org = rootGetters["auth/activeOrganization"];
-    const organizationId = org.organizationId;
+    const org = rootGetters["auth/activeGroup"];
+    const groupId = org.groupId;
     const events: any = (await this.$axios.get(
-      `/groups/${organizationId}/events`
+      `/groups/${groupId}/events`
     )).data;
     commit("setRecentEvents", events);
   }
@@ -542,5 +542,5 @@ export const getters: GetterTree<RootState, RootState> = {
     state.devWebhook[team] && state.devWebhook[team][webhook],
   apiKeyLogs: state => (team: string, apiKeyLogs: string) =>
     state.apiKeyLogs[team] && state.apiKeyLogs[team][apiKeyLogs],
-  organization: state => (team: string) => (state.groups)[team]
+  group: state => (team: string) => (state.groups)[team]
 };

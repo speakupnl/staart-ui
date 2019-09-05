@@ -22,14 +22,14 @@
     <!-- <form v-meta-ctrl-enter="save" @submit.prevent="save">
       <CommaList
         label="IP restrictions"
-        :value="organization.ipRestrictions"
+        :value="group.ipRestrictions"
         placeholder="Enter an IP address or CIDR, e.g., 192.168.1.1/42"
-        @input="val => (organization.ipRestrictions = val)"
+        @input="val => (group.ipRestrictions = val)"
       />
       <Checkbox
-        :value="organization.forceTwoFactor"
+        :value="group.forceTwoFactor"
         label="Enforce two-factor authorization (2FA) on team members"
-        @input="val => (organization.forceTwoFactor = val)"
+        @input="val => (group.forceTwoFactor = val)"
       />
       <button class="button">
         Update security settings
@@ -63,11 +63,11 @@
     </p>
     <transition name="modal">
       <Confirm v-if="showDelete" :on-close="() => (showDelete = false)">
-        <h2>Are you sure you want to delete {{ organization.name }}?</h2>
+        <h2>Are you sure you want to delete {{ group.name }}?</h2>
         <p>
           Deleting a team is not reversible, and all members will be removed.
         </p>
-        <form @submit.prevent="deleteOrganization">
+        <form @submit.prevent="deleteGroup">
           <Input
             :value="deleteText"
             label='To confirm, enter "delete team" below'
@@ -102,11 +102,7 @@ import CommaList from "@/components/form/CommaList.vue";
 import ImageInput from "@/components/form/Image.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import { User } from "@/types/auth";
-import {
-  OrganizationsKV,
-  Organization,
-  emptyOrganization
-} from "@/types/manage";
+import { GroupsKV, Group, emptyGroup } from "@/types/manage";
 library.add(faSync);
 
 @Component({
@@ -124,22 +120,22 @@ library.add(faSync);
 })
 export default class ManageSettings extends Vue {
   loading = "";
-  organization: Organization = emptyOrganization;
+  group: Group = emptyGroup;
   showDelete = false;
   deleteText = "";
 
   private created() {
-    this.organization = {
-      ...this.$store.getters["manage/organization"](this.$route.params.team)
+    this.group = {
+      ...this.$store.getters["manage/group"](this.$route.params.team)
     };
   }
 
   private load() {
-    // this.loading = "Loading organization details";
+    // this.loading = "Loading group details";
     // this.$store
-    //   .dispatch("manage/getOrganization", this.$route.params.team)
+    //   .dispatch("manage/getGroup", this.$route.params.team)
     //   .then(org => {
-    //     this.organization = { ...org };
+    //     this.group = { ...org };
     //   })
     //   .catch(() => {})
     //   .finally(() => (this.loading = ""));
@@ -152,9 +148,9 @@ export default class ManageSettings extends Vue {
   private save() {
     this.loading = "Saving";
     this.$store
-      .dispatch("manage/updateOrganization", {
+      .dispatch("manage/updateGroup", {
         team: this.$route.params.team,
-        ...this.organization
+        ...this.group
       })
       .then(() => {})
       .catch(() => {})
@@ -170,14 +166,14 @@ export default class ManageSettings extends Vue {
       .then(() => (this.loading = ""));
   }
 
-  private deleteOrganization() {
+  private deleteGroup() {
     if (this.deleteText !== "delete team") return;
     this.showDelete = false;
     this.loading = "Deleting your team";
     this.$store
-      .dispatch("manage/deleteOrganization", { team: this.$route.params.team })
+      .dispatch("manage/deleteGroup", { team: this.$route.params.team })
       .then(() => {
-        this.$router.push("/settings/organizations");
+        this.$router.push("/settings/groups");
       })
       .catch(error => {
         throw new Error(error);

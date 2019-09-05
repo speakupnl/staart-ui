@@ -19,7 +19,7 @@ import Loading from "@/components/Loading.vue";
 })
 export default class Dashboard extends Vue {
   private mounted() {
-    const team = this.$store.getters["auth/activeOrganization"];
+    const team = this.$store.getters["auth/activeGroup"];
     if (team && team !== "undefined") {
       this.$router.replace(`/settings/${team}`);
     } else {
@@ -28,19 +28,17 @@ export default class Dashboard extends Vue {
         .then(memberships => {
           if (memberships.data && memberships.data.length) {
             if (
-              memberships.data[0].organization &&
-              memberships.data[0].organization.username
+              memberships.data[0].group &&
+              memberships.data[0].group.username
             ) {
               this.$router.replace(
-                `/settings/${memberships.data[0].organization.username}`
+                `/settings/${memberships.data[0].group.username}`
               );
             } else {
-              this.$router.replace(
-                `/settings/${memberships.data[0].organizationId}`
-              );
+              this.$router.replace(`/settings/${memberships.data[0].groupId}`);
             }
           } else {
-            this.$router.replace("/onboarding/organization");
+            this.$router.replace("/onboarding/group");
           }
         })
         .catch(() => {});

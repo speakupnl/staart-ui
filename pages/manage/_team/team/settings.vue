@@ -21,25 +21,25 @@
     <Loading v-if="loading" :message="loading" />
     <form v-else v-meta-ctrl-enter="save" @submit.prevent="save">
       <Input
-        :value="organization.name"
+        :value="group.name"
         label="Team name"
-        placeholder="Enter your organization's name"
+        placeholder="Enter your group's name"
         required
-        @input="val => (organization.name = val)"
+        @input="val => (group.name = val)"
       />
       <Checkbox
-        :value="organization.autoJoinDomain"
+        :value="group.autoJoinDomain"
         label="Allow users with verified domain emails to automatically join this team"
         help="You can set up verified domains below to make it easy for your team to join"
         :question-mark="true"
-        @input="val => (organization.autoJoinDomain = val)"
+        @input="val => (group.autoJoinDomain = val)"
       />
       <Checkbox
-        :value="organization.onlyAllowDomain"
+        :value="group.onlyAllowDomain"
         label="Only allow users with verified domain emails to join this team"
         help="We won't let managers invite users with emails from other domains"
         :question-mark="true"
-        @input="val => (organization.onlyAllowDomain = val)"
+        @input="val => (group.onlyAllowDomain = val)"
       />
       <button class="button">
         Update settings
@@ -63,11 +63,7 @@ import ImageInput from "@/components/form/Image.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Domains from "@/components/team/Domains.vue";
 import { User } from "@/types/auth";
-import {
-  OrganizationsKV,
-  Organization,
-  emptyOrganization
-} from "@/types/manage";
+import { GroupsKV, Group, emptyGroup } from "@/types/manage";
 library.add(faSync);
 
 @Component({
@@ -84,12 +80,12 @@ library.add(faSync);
 })
 export default class ManageSettings extends Vue {
   loading = "";
-  organization: Organization = emptyOrganization;
+  group: Group = emptyGroup;
   loggedInMembership = 3;
 
   private created() {
-    this.organization = {
-      ...this.$store.getters["manage/organization"](this.$route.params.team)
+    this.group = {
+      ...this.$store.getters["manage/group"](this.$route.params.team)
     };
     this.loggedInMembership = parseInt(
       this.$store.getters["manage/loggedInMembership"](this.$route.params.team)
@@ -97,11 +93,11 @@ export default class ManageSettings extends Vue {
   }
 
   private load() {
-    this.loading = "Loading organization details";
+    this.loading = "Loading group details";
     this.$store
-      .dispatch("manage/getOrganization", this.$route.params.team)
+      .dispatch("manage/getGroup", this.$route.params.team)
       .then(org => {
-        this.organization = { ...org };
+        this.group = { ...org };
       })
       .catch(() => {})
       .finally(() => (this.loading = ""));
@@ -114,13 +110,13 @@ export default class ManageSettings extends Vue {
   private save() {
     this.loading = "Saving";
     this.$store
-      .dispatch("manage/updateOrganization", {
+      .dispatch("manage/updateGroup", {
         team: this.$route.params.team,
-        ...this.organization
+        ...this.group
       })
       .then(org => {
-        this.organization = { ...org };
-        this.$router.replace(`/manage/${this.organization.id}/team/settings`);
+        this.group = { ...org };
+        this.$router.replace(`/manage/${this.group.id}/team/settings`);
       })
       .catch(() => {})
       .finally(() => (this.loading = ""));

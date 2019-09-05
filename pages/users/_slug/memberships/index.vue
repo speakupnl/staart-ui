@@ -41,12 +41,12 @@
               v-for="(membership, index) in memberships.data"
               :key="`${membership.id}_${index}`"
             >
-              <td><Team :team="membership.organization" /></td>
+              <td><Team :team="membership.group" /></td>
               <td>{{ membershipRoles[membership.role] || membership.role }}</td>
               <td><TimeAgo :date="membership.createdAt" /></td>
               <td class="text text--align-right">
                 <router-link
-                  :to="`/dashboard/${membership.organization.username}`"
+                  :to="`/dashboard/${membership.group.username}`"
                   aria-label="View dashboard"
                   data-balloon-pos="up"
                   class="button button--type-icon"
@@ -54,7 +54,7 @@
                   <font-awesome-icon class="icon" icon="eye" fixed-width />
                 </router-link>
                 <router-link
-                  :to="`/manage/${membership.organization.username}/settings`"
+                  :to="`/manage/${membership.group.username}/settings`"
                   aria-label="Team settings"
                   data-balloon-pos="up"
                   class="button button--type-icon"
@@ -125,7 +125,7 @@
           class="button button--color-danger button--state-cta"
           @click="deleteMembership(showDelete.id)"
         >
-          Yes, leave {{ showDelete.organization.name }}
+          Yes, leave {{ showDelete.group.name }}
         </button>
         <button type="button" class="button" @click="showDelete = null">
           No, don't leave
@@ -229,7 +229,7 @@ export default class ManageSettings extends Vue {
   private createNewTeam() {
     this.loading = "Creating your team";
     this.$store
-      .dispatch("users/createOrganization", {
+      .dispatch("users/createGroup", {
         name: this.newName,
         slug: this.$route.params.slug
       })

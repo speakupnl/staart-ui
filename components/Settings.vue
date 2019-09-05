@@ -14,7 +14,7 @@
           <font-awesome-icon class="nav-icon" icon="key" fixed-width />
           <span>Password &amp; security</span>
         </nuxt-link>
-        <nuxt-link class="item" to="/settings/organizations">
+        <nuxt-link class="item" to="/settings/groups">
           <font-awesome-icon class="nav-icon" icon="building" fixed-width />
           <span>Your teams</span>
         </nuxt-link>

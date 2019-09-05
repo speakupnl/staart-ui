@@ -238,7 +238,7 @@ export const actions: ActionTree<RootState, RootState> = {
     );
     return result;
   },
-  async createOrganization({ dispatch }, context) {
+  async createGroup({ dispatch }, context) {
     const slug = context.slug;
     delete context.slug;
     await this.$axios.put("/groups", context);

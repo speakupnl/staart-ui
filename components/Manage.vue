@@ -143,13 +143,13 @@ export default class Manage extends Vue {
     this.update();
   }
   private update() {
-    this.$store.commit("auth/setActiveOrganization", this.$route.params.team);
+    this.$store.commit("auth/setActiveGroup", this.$route.params.team);
     this.getUserMembership();
   }
   private getUserMembership() {
     const user = this.$store.state.auth.user;
     if (user) {
-      const org = this.$store.state.auth.activeOrganization;
+      const org = this.$store.state.auth.activeGroup;
       if (org) {
         const memberships = this.$store.state.users.memberships[user.id];
         if (memberships) {

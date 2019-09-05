@@ -258,8 +258,8 @@
       >
         <h2>New subscription</h2>
         <p>
-          Create a new subscription for your organization. Your default payment
-          method will be charged automatically.
+          Create a new subscription for your group. Your default payment method
+          will be charged automatically.
         </p>
         <Loading v-if="loadingPricingPlans" :message="loadingPricingPlans" />
         <LargeMessage

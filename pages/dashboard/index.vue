@@ -19,7 +19,7 @@ import Loading from "@/components/Loading.vue";
 })
 export default class Dashboard extends Vue {
   private mounted() {
-    const team = this.$store.getters["auth/activeOrganization"];
+    const team = this.$store.getters["auth/activeGroup"];
     if (team && team !== "undefined") {
       this.$router.replace(`/dashboard/${team}`);
     } else {
@@ -37,7 +37,7 @@ export default class Dashboard extends Vue {
         this.$router.replace(`/dashboard/${memberships.data[0].id}`);
       }
     } else {
-      this.$router.replace("/onboarding/organization");
+      this.$router.replace("/onboarding/group");
     }
   }
 }

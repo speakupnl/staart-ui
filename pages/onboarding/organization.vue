@@ -80,7 +80,7 @@ export default class OnboardingTeam extends Vue {
     this.teamName = this.teamName || `${this.user.firstName}'s team`;
     this.loading = true;
     this.$store
-      .dispatch("settings/createOrganization", {
+      .dispatch("settings/createGroup", {
         name: this.teamName
       })
       .then(() => {

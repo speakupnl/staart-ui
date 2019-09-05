@@ -149,7 +149,7 @@ export const actions: ActionTree<RootState, RootState> = {
     await this.$axios.delete(`/memberships/${context}`);
     return dispatch("getMemberships");
   },
-  async createOrganization({ dispatch }, context) {
+  async createGroup({ dispatch }, context) {
     await this.$axios.put("/groups", context);
     return dispatch("getMemberships");
   },

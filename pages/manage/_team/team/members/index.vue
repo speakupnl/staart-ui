@@ -22,8 +22,8 @@
     <table v-if="memberships && memberships.data" class="table">
       <thead>
         <th>Name</th>
-        <th>Joined</th>
-        <th>Role</th>
+        <!-- <th>Joined</th>
+        <th>Role</th> -->
         <th></th>
       </thead>
       <tbody>
@@ -31,42 +31,7 @@
           v-for="(member, index) in memberships.data"
           :key="`${member.id}_${index}`"
         >
-          <td><User :user="member.user" /></td>
-          <td><TimeAgo :date="member.createdAt" /></td>
-          <td>{{ membershipRoles[member.role] || member.role }}</td>
-          <td class="text text--align-right">
-            <div
-              v-if="
-                user &&
-                  member.userId !== user.id &&
-                  loggedInMembership !== 4 &&
-                  (loggedInMembership === 3 ? member.role > 2 : true)
-              "
-            >
-              <router-link
-                v-if="user && member.userId !== user.id"
-                :to="`/manage/${$route.params.team}/team/${member.id}`"
-                aria-label="Edit membership"
-                data-balloon-pos="up"
-                class="button button--type-icon"
-              >
-                <font-awesome-icon class="icon" icon="pencil-alt" fixed-width />
-              </router-link>
-              <button
-                aria-label="Remove"
-                data-balloon-pos="up"
-                class="button button--color-danger button--type-icon"
-                @click="showDelete = member"
-              >
-                <font-awesome-icon
-                  title="Remove"
-                  class="icon icon--color-danger"
-                  icon="trash"
-                  fixed-width
-                />
-              </button>
-            </div>
-          </td>
+          <td><User :user="member" /></td>
         </tr>
       </tbody>
     </table>
@@ -90,7 +55,7 @@
     </div>
     <h2>Invite another member</h2>
     <p>
-      Use this form to invite another user from your team to this organization.
+      Use this form to invite another user from your team to this group.
     </p>
     <Loading v-if="inviting" message="Inviting member" />
     <form
@@ -128,12 +93,11 @@
       <Confirm v-if="showDelete" :on-close="() => (showDelete = null)">
         <h2>Are you sure you want to remove {{ showDelete.user.name }}?</h2>
         <p>
-          Removing someone from your organization is not reversible, and you'll
-          need to invite them again if you change your mind.
+          Removing someone from your group is not reversible, and you'll need to
+          invite them again if you change your mind.
         </p>
         <p>
-          If they have any organization-specific data, that will also be
-          deleted.
+          If they have any group-specific data, that will also be deleted.
         </p>
         <button
           class="button button--color-danger button--state-cta"

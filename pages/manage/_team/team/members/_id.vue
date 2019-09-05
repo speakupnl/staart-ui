@@ -31,7 +31,7 @@
             <td><User :user="membership.user" /></td>
           </tr>
           <tr>
-            <td>Joined organization</td>
+            <td>Joined group</td>
             <td><TimeAgo :date="membership.createdAt" /></td>
           </tr>
           <tr>

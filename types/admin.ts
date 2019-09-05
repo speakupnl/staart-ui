@@ -1,6 +1,6 @@
 import { Paginated } from "./root";
 import { User } from "./users";
-import { Organization } from "./manage";
+import { Group } from "./manage";
 
 export interface ElasticSearchRecord {
   _index: string;
@@ -16,8 +16,8 @@ export interface ElasticSearchRecord {
 export interface Users extends Paginated {
   data: User[];
 }
-export interface Organizations extends Paginated {
-  data: Organization[];
+export interface Groups extends Paginated {
+  data: Group[];
 }
 export interface ServerLogs extends Paginated {
   data: ElasticSearchRecord[];
@@ -25,7 +25,7 @@ export interface ServerLogs extends Paginated {
 
 export interface RootState {
   users: Users,
-  organizations: Organizations,
+  groups: Groups,
   serverLogs: ServerLogs
 }
 

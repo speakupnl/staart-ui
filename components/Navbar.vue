@@ -9,9 +9,9 @@
           >Admin</nuxt-link
         >
         <nuxt-link
-          v-if="activeOrganization"
+          v-if="activeGroup"
           class="item"
-          :to="`/manage/${activeOrganization}/settings`"
+          :to="`/manage/${activeGroup}/settings`"
           >Settings</nuxt-link
         >
         <nuxt-link v-else class="item" to="/settings">Settings</nuxt-link>
@@ -190,7 +190,7 @@ export default class Card extends Vue {
   isVisible = true;
   notificationCount = 0;
   showNav = false;
-  activeOrganization: string | null = null;
+  activeGroup: string | null = null;
   loggedInMembership = 3;
   isAuthenticated = false;
   user = emptyUser;
@@ -221,9 +221,9 @@ export default class Card extends Vue {
       this.isVisible = true;
     }
     if (this.$route.params.team) {
-      this.activeOrganization = this.$route.params.team;
+      this.activeGroup = this.$route.params.team;
     } else {
-      this.activeOrganization = this.$store.getters["auth/activeOrganization"];
+      this.activeGroup = this.$store.getters["auth/activeGroup"];
     }
     const user = this.$store.getters["auth/user"];
     if (user && user.id)
@@ -444,7 +444,7 @@ nav .item.item--type-last {
 nav .item.item--type-user {
   padding-right: 0.5rem;
 }
-.organization-name {
+.group-name {
   margin-left: 0.5rem;
 }
 .nav-icon {

@@ -1,5 +1,5 @@
 import { IdRow, Paginated } from "./root";
-import { Organization } from "./manage";
+import { Group } from "./manage";
 
 export interface User extends IdRow {
   name: string;
@@ -28,8 +28,8 @@ export interface AccessToken extends IdRow {
 }
 export interface Membership extends IdRow {
   userId: number;
-  organizationId: number;
-  organization: Organization;
+  groupId: number;
+  group: Group;
   role: "1" | "2" | "3";
 }
 export interface Email extends IdRow {

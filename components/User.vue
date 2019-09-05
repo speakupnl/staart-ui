@@ -2,10 +2,10 @@
   <div class="user">
     <div
       class="avatar"
-      :style="`background-image: url('${user.profilePicture}')`"
+      :style="`background-image: url('https://unavatar.now.sh/${user.email}')`"
     />
     <div>
-      <span>{{ user.name }}</span>
+      <span>{{ user.firstName }} {{ user.lastName }}</span>
       <span v-if="self.id === user.id" class="label">You</span>
       <router-link
         v-if="self.role === 3"
