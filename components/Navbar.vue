@@ -79,13 +79,9 @@
                   :key="`m${membership.id}${i}`"
                 >
                   <nuxt-link
-                    v-if="membership && membership.organization"
                     class="item"
-                    :to="
-                      `/manage/${membership.organization.username ||
-                        membership.organization.id}/settings`
-                    "
-                    >{{ (membership.organization || {}).name }}</nuxt-link
+                    :to="`/manage/${membership.id}/settings`"
+                    >{{ membership.name }}</nuxt-link
                   >
                 </span>
               </div>

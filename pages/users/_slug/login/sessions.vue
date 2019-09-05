@@ -3,7 +3,7 @@
     <Loading v-if="loading" :message="loading" />
     <div v-else>
       <div class="row">
-        <h1>Active sessions</h1>
+        <h1>Your sessions</h1>
         <div class="text text--align-right">
           <button
             aria-label="Refresh"
@@ -27,9 +27,10 @@
         <table class="table">
           <thead>
             <tr>
-              <th>Device</th>
+              <th>IP address</th>
+              <th>Started</th>
               <th>Last used</th>
-              <th></th>
+              <!-- <th></th> -->
             </tr>
           </thead>
           <tbody>
@@ -38,21 +39,15 @@
               :key="`${session.id}_${index}`"
             >
               <td>
-                <span>{{
-                  parseUserAgent(session.userAgent).getBrowser().name
-                }}</span>
-                <span>{{
-                  parseUserAgent(session.userAgent).getBrowser().major
-                }}</span>
-                on
-                <span>{{
-                  parseUserAgent(session.userAgent).getOS().name
-                }}</span>
+                <code>{{ session.ipAddress }}</code>
               </td>
               <td>
-                <TimeAgo :date="session.updatedAt || session.createdAt" />
+                <TimeAgo :date="session.start" />
               </td>
-              <td class="text text--align-right">
+              <td>
+                <TimeAgo :date="session.lastAccess" />
+              </td>
+              <!-- <td class="text text--align-right">
                 <button
                   aria-label="Log out"
                   data-balloon-pos="up"
@@ -65,7 +60,7 @@
                     fixed-width
                   />
                 </button>
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>

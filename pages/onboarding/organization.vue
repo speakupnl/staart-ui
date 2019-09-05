@@ -9,7 +9,7 @@
       v-else
       class="container container--size-medium container--top-20height container--bottom-20height"
     >
-      <h1>👋 Hi {{ user.nickname || "there" }}, do you have a team?</h1>
+      <h1>👋 Hi {{ user.firstName || "there" }}, do you have a team?</h1>
       <form
         v-meta-ctrl-enter="setupTeam"
         class="row"
@@ -73,11 +73,11 @@ export default class OnboardingTeam extends Vue {
   user!: any;
   loading = false;
   private mounted() {
-    if (this.user && this.user.nickname)
-      this.teamName = `${this.user.nickname}'s assistant`;
+    if (this.user && this.user.firstName)
+      this.teamName = `${this.user.firstName}'s team`;
   }
   private setupTeam() {
-    this.teamName = this.teamName || `${this.user.nickname}'s assistant`;
+    this.teamName = this.teamName || `${this.user.firstName}'s team`;
     this.loading = true;
     this.$store
       .dispatch("settings/createOrganization", {

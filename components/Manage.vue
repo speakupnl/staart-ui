@@ -152,14 +152,10 @@ export default class Manage extends Vue {
     if (user) {
       const org = this.$store.state.auth.activeOrganization;
       if (org) {
-        const memberships = this.$store.state.users.memberships[
-          user.username || user.id
-        ];
+        const memberships = this.$store.state.users.memberships[user.id];
         if (memberships) {
           const yourMembership = memberships.data.filter(
-            membership =>
-              membership.organization.id === org ||
-              membership.organization.username === org
+            membership => membership.id === org
           );
           if (yourMembership.length) {
             const role = yourMembership[0].role;
@@ -169,14 +165,14 @@ export default class Manage extends Vue {
             });
           } else if (!this.doneOnce) {
             this.$store
-              .dispatch("users/getMemberships", { slug: user.username })
+              .dispatch("users/getMemberships", { slug: user.id })
               .then(() => this.getUserMembership())
               .catch(() => {})
               .then(() => (this.doneOnce = true));
           }
         } else {
           this.$store
-            .dispatch("users/getMemberships", { slug: user.username })
+            .dispatch("users/getMemberships", { slug: user.id })
             .then(() => this.getUserMembership())
             .catch(() => {});
         }

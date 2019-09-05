@@ -29,7 +29,7 @@
         />
         <button class="button">Change password</button>
       </form>
-      <h2>Two-factor authentication</h2>
+      <!-- <h2>Two-factor authentication</h2>
       <p>
         Adding a second factor increases security while logging in to your
         account and doing sensitive operations. 2FA is currently
@@ -70,7 +70,7 @@
             spin
           />
         </button>
-      </form>
+      </form> -->
     </div>
     <transition name="modal">
       <Modal v-if="showOTP" :on-close="() => (showOTP = false)">

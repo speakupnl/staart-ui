@@ -29,25 +29,12 @@ export default class Dashboard extends Vue {
           .dispatch("users/getMemberships", { slug: user.id })
           .then(memberships => this.continue(memberships))
           .catch(() => {});
-      this.$store
-        .dispatch("settings/getMemberships")
-        .then(memberships => this.continue(memberships))
-        .catch(() => {});
     }
   }
   private continue(memberships) {
     if (memberships.data && memberships.data.length) {
-      if (
-        memberships.data[0].organization &&
-        memberships.data[0].organization.id
-      ) {
-        this.$router.replace(
-          `/dashboard/${memberships.data[0].organization.id}`
-        );
-      } else {
-        this.$router.replace(
-          `/dashboard/${memberships.data[0].organizationId}`
-        );
+      if (memberships.data[0].id) {
+        this.$router.replace(`/dashboard/${memberships.data[0].id}`);
       }
     } else {
       this.$router.replace("/onboarding/organization");
