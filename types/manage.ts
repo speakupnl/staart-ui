@@ -6,6 +6,9 @@ export interface Group extends IdRow {
   stripeCustomerId?: string;
   username: string;
   autoJoinDomain: boolean;
+  attributes?: {
+    [index: string]: (string | number | boolean)[];
+  }
   onlyAllowDomain: boolean;
 }
 

@@ -24,7 +24,7 @@
         <th>Name</th>
         <!-- <th>Joined</th>
         <th>Role</th> -->
-        <th></th>
+        <!-- <th></th> -->
       </thead>
       <tbody>
         <tr
@@ -63,13 +63,22 @@
       v-meta-ctrl-enter="inviteMember"
       @submit.prevent="inviteMember"
     >
-      <Input
-        :value="newUserName"
-        label="Name"
-        placeholder="Enter new user's full name"
-        required
-        @input="val => (newUserName = val)"
-      />
+      <div class="row">
+        <Input
+          :value="newUserFirstName"
+          label="Name"
+          placeholder="Enter first name"
+          required
+          @input="val => (newUserFirstName = val)"
+        />
+        <Input
+          :value="newUserLastName"
+          label="Name"
+          placeholder="Enter last name"
+          required
+          @input="val => (newUserLastName = val)"
+        />
+      </div>
       <Input
         :value="newUserEmail"
         type="email"
@@ -78,7 +87,7 @@
         required
         @input="val => (newUserEmail = val)"
       />
-      <Select
+      <!-- <Select
         :value="newUserRole"
         label="Role"
         label-help="Learn more about roles"
@@ -86,7 +95,7 @@
         :options="membershipRoles"
         required
         @input="val => (newUserRole = val)"
-      />
+      /> -->
       <button class="button">Send invitation</button>
     </form>
     <transition name="modal">
@@ -164,7 +173,8 @@ export default class ManageMembers extends Vue {
   membershipRoles = locale.membershipRoles;
   loggedInMembership = 3;
 
-  newUserName = "";
+  newUserFirstName = "";
+  newUserLastName = "";
   newUserEmail = "";
   newUserRole = 3;
 
@@ -210,7 +220,8 @@ export default class ManageMembers extends Vue {
     this.inviting = true;
     this.$store
       .dispatch("manage/inviteMember", {
-        name: this.newUserName,
+        firstName: this.newUserFirstName,
+        lastName: this.newUserLastName,
         email: this.newUserEmail,
         role: this.newUserRole,
         team: this.$route.params.team
@@ -218,7 +229,8 @@ export default class ManageMembers extends Vue {
       .then(memberships => (this.memberships = { ...memberships }))
       .catch(() => {})
       .finally(() => (this.inviting = false));
-    this.newUserName = "";
+    this.newUserFirstName = "";
+    this.newUserLastName = "";
     this.newUserEmail = "";
   }
 

@@ -195,7 +195,6 @@ export default class ManageSettings extends Vue {
     } else {
       this.user.attributes[key] = [value];
     }
-    console.log(this.user);
   }
 
   getAttribute(key: string) {

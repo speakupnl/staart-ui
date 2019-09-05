@@ -27,19 +27,17 @@
         required
         @input="val => (group.name = val)"
       />
-      <Checkbox
-        :value="group.autoJoinDomain"
-        label="Allow users with verified domain emails to automatically join this team"
-        help="You can set up verified domains below to make it easy for your team to join"
-        :question-mark="true"
-        @input="val => (group.autoJoinDomain = val)"
+      <Input
+        :value="getAttribute('domain')"
+        label="Team domain"
+        placeholder="Enter your team's domain name"
+        required
+        @input="val => setAttribute('domain', val)"
       />
       <Checkbox
-        :value="group.onlyAllowDomain"
-        label="Only allow users with verified domain emails to join this team"
-        help="We won't let managers invite users with emails from other domains"
-        :question-mark="true"
-        @input="val => (group.onlyAllowDomain = val)"
+        :value="getAttribute('allowDomain')"
+        label="Allow people from this domain to join my team automatically"
+        @input="val => setAttribute('allowDomain', val)"
       />
       <button class="button">
         Update settings
@@ -105,6 +103,22 @@ export default class ManageSettings extends Vue {
 
   private mounted() {
     this.load();
+  }
+
+  setAttribute(key: string, value: string) {
+    this.group.attributes = this.group.attributes || {};
+    if (this.group.attributes[key] && this.group.attributes[key].length) {
+      this.group.attributes[key][0] = value;
+    } else {
+      this.group.attributes[key] = [value];
+    }
+  }
+
+  getAttribute(key: string) {
+    this.group.attributes = this.group.attributes || {};
+    if (this.group.attributes[key] && this.group.attributes[key].length) {
+      return this.group.attributes[key][0];
+    }
   }
 
   private save() {
