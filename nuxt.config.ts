@@ -91,7 +91,7 @@ const config: Configuration = {
   axios: {
     baseURL:
       process.env.NODE_ENV === "production"
-        ? "https://speakup.caprover.oswaldlabs.com/v1"
+        ? "https://speakup-staart.caprover.oswaldlabs.com/v1"
         : "http://localhost:7005/v1"
   },
   scrollBehavior() {
