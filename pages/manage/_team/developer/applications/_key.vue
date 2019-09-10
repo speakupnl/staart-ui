@@ -125,6 +125,21 @@
               :options="clientScopesList"
               @input="val => (application.optionalClientScopes = val)"
             />
+            <div style="margin-bottom: 0.5rem">
+              <strong>Enabled OAuth flows</strong>
+            </div>
+            <div class="row">
+              <Checkbox
+                label="Standard"
+                :value="application.standardFlowEnabled"
+                @input="val => (application.standardFlowEnabled = val)"
+              />
+              <Checkbox
+                label="Implicit"
+                :value="application.implicitFlowEnabled"
+                @input="val => (application.implicitFlowEnabled = val)"
+              />
+            </div>
             <button class="button">Update Application</button>
             <button
               type="button"
