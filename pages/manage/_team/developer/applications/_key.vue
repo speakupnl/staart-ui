@@ -4,7 +4,7 @@
       <div class="row">
         <div>
           <nuxt-link
-            :to="`/manage/${$route.params.team}/developer/api-keys`"
+            :to="`/manage/${$route.params.team}/developer/applications`"
             aria-label="Back"
             data-balloon-pos="down"
             class="button button--type-icon button--type-back"
@@ -29,10 +29,10 @@
           </button>
         </div>
       </div>
-      <div v-if="apiKey && apiKey.jwtApiKey">
+      <div v-if="application && application.jwtApiKey">
         <h2>Use Application</h2>
-        <Input label="Application" :value="apiKey.jwtApiKey" disabled />
-        <button class="button" @click="copy(apiKey.jwtApiKey)">
+        <Input label="Application" :value="application.jwtApiKey" disabled />
+        <button class="button" @click="copy(application.jwtApiKey)">
           <font-awesome-icon class="icon icon--mr-1" icon="copy" />
           <span v-if="copied">Copied</span>
           <span v-else>Copy</span>
@@ -42,7 +42,7 @@
           type="button"
           class="button button--color-danger"
           style="margin-left: 0.5rem"
-          @click.prevent="showDelete = apiKey"
+          @click.prevent="showDelete = application"
         >
           <font-awesome-icon class="icon icon--mr-1" icon="trash" />
           <span>Delete</span>
@@ -56,30 +56,30 @@
             <Input
               label="Name"
               placeholder="Enter a name for this Application"
-              :value="apiKey.name"
+              :value="application.name"
               :disabled="readOnly"
-              @input="val => (apiKey.name = val)"
+              @input="val => (application.name = val)"
             />
             <CheckList
               label="API restrictions"
               :options="scopes"
-              :value="apiKey.scopes"
+              :value="application.scopes"
               :disabled="readOnly"
-              @input="val => (apiKey.scopes = val)"
+              @input="val => (application.scopes = val)"
             />
             <CommaList
               label="IP restrictions"
-              :value="apiKey.ipRestrictions"
+              :value="application.ipRestrictions"
               placeholder="Enter an IP address or CIDR, e.g., 192.168.1.1/42"
               :disabled="readOnly"
-              @input="val => (apiKey.ipRestrictions = val)"
+              @input="val => (application.ipRestrictions = val)"
             />
             <CommaList
               label="Referrer restrictions"
-              :value="apiKey.referrerRestrictions"
+              :value="application.referrerRestrictions"
               placeholder="Enter a host name without protocol, e.g., example.com"
               :disabled="readOnly"
-              @input="val => (apiKey.referrerRestrictions = val)"
+              @input="val => (application.referrerRestrictions = val)"
             />
             <button v-if="!readOnly" class="button">Update Application</button>
           </form>
@@ -187,18 +187,18 @@ library.add(
   middleware: "auth"
 })
 export default class ManageSettings extends Vue {
-  apiKeys: ApiKeys = emptyPagination;
+  applications: ApiKeys = emptyPagination;
   showDelete = false;
   showUpdate = false;
   loading = "";
-  apiKey: ApiKey | undefined = undefined;
+  application: ApiKey | undefined = undefined;
   scopes = scopes;
   copied = false;
   loggedInMembership = 3;
 
   private created() {
-    this.apiKey = {
-      ...this.$store.getters["manage/apiKey"](
+    this.application = {
+      ...this.$store.getters["manage/application"](
         this.$route.params.team,
         this.$route.params.key
       )
@@ -219,8 +219,8 @@ export default class ManageSettings extends Vue {
         team: this.$route.params.team,
         id: this.$route.params.key
       })
-      .then(apiKey => {
-        this.apiKey = { ...apiKey };
+      .then(application => {
+        this.application = { ...application };
       })
       .catch(error => {
         throw new Error(error);
@@ -235,20 +235,20 @@ export default class ManageSettings extends Vue {
   private updateApiKey() {
     this.showUpdate = false;
     this.loading = "Updating your Application";
-    const apiKey = { ...this.apiKey };
-    if (apiKey) {
+    const application = { ...this.application };
+    if (application) {
       ["jwtApiKey", "groupId", "expiresAt", "createdAt", "updatedAt"].forEach(
-        k => delete apiKey[k]
+        k => delete application[k]
       );
     }
     this.$store
       .dispatch("manage/updateApiKey", {
         team: this.$route.params.team,
         id: this.$route.params.key,
-        ...apiKey
+        ...application
       })
-      .then(apiKey => {
-        this.apiKey = { ...apiKey };
+      .then(application => {
+        this.application = { ...application };
       })
       .catch(error => {
         throw new Error(error);
@@ -266,9 +266,9 @@ export default class ManageSettings extends Vue {
         team: this.$route.params.team,
         id: key
       })
-      .then(apiKeys => {
-        this.apiKeys = { ...apiKeys };
-        this.$router.push(`/manage/${this.$route.params.team}/api-keys`);
+      .then(applications => {
+        this.applications = { ...applications };
+        this.$router.push(`/manage/${this.$route.params.team}/applications`);
       })
       .catch(error => {
         throw new Error(error);

@@ -20,12 +20,19 @@
         </div>
       </div>
       <LargeMessage
-        v-if="!loading && (!apiKeys || !apiKeys.data || !apiKeys.data.length)"
+        v-if="
+          !loading &&
+            (!applications || !applications.data || !applications.data.length)
+        "
         heading="No applications yet"
         img="undraw_software_engineer_lvl5.svg"
         text="Create an application below"
       />
-      <div v-else-if="apiKeys && apiKeys.data && apiKeys.data.length">
+      <div
+        v-else-if="
+          applications && applications.data && applications.data.length
+        "
+      >
         <table class="table">
           <thead>
             <tr>
@@ -38,35 +45,40 @@
           </thead>
           <tbody>
             <tr
-              v-for="(apiKey, index) in apiKeys.data"
-              :key="`${apiKey.id}_${index}`"
+              v-for="(application, index) in applications.data"
+              :key="`${application.id}_${index}`"
             >
-              <td>{{ apiKey.name || "Unnamed application" }}</td>
-              <td v-if="apiKey.scopes">
-                {{ apiKey.scopes.split(",").length }} API{{
-                  apiKey.scopes.split(",").length === 1 ? "" : "s"
+              <td>{{ application.name || "Unnamed application" }}</td>
+              <td v-if="application.scopes">
+                {{ application.scopes.split(",").length }} API{{
+                  application.scopes.split(",").length === 1 ? "" : "s"
                 }}
               </td>
               <td v-else>No APIs</td>
-              <td v-if="apiKey.ipRestrictions || apiKey.referrerRestrictions">
+              <td
+                v-if="
+                  application.ipRestrictions || application.referrerRestrictions
+                "
+              >
                 {{
-                  (apiKey.ipRestrictions || "").split(",").length +
-                    (apiKey.referrerRestrictions || "").split(",").length
+                  (application.ipRestrictions || "").split(",").length +
+                    (application.referrerRestrictions || "").split(",").length
                 }}
                 restriction{{
-                  (apiKey.ipRestrictions || "").split(",").length +
-                    (apiKey.referrerRestrictions || "").split(",").length ===
+                  (application.ipRestrictions || "").split(",").length +
+                    (application.referrerRestrictions || "").split(",")
+                      .length ===
                   1
                     ? ""
                     : "s"
                 }}
               </td>
               <td v-else>No restrictions</td>
-              <td><TimeAgo :date="apiKey.expiresAt" /></td>
+              <td><TimeAgo :date="application.expiresAt" /></td>
               <td class="text text--align-right">
                 <router-link
                   :to="
-                    `/manage/${$route.params.team}/developer/api-keys/${apiKey.id}`
+                    `/manage/${$route.params.team}/developer/applications/${application.id}`
                   "
                   aria-label="View"
                   data-balloon-pos="up"
@@ -76,7 +88,7 @@
                 </router-link>
                 <router-link
                   :to="
-                    `/manage/${$route.params.team}/developer/logs?key=${apiKey.id}`
+                    `/manage/${$route.params.team}/developer/logs?key=${application.id}`
                   "
                   aria-label="Logs"
                   data-balloon-pos="up"
@@ -92,7 +104,7 @@
                   aria-label="Delete"
                   data-balloon-pos="up"
                   class="button button--type-icon button--color-danger"
-                  @click="() => (showDelete = apiKey)"
+                  @click="() => (showDelete = application)"
                 >
                   <font-awesome-icon class="icon" icon="trash" fixed-width />
                 </button>
@@ -102,7 +114,7 @@
         </table>
         <div class="pagination text text--align-center">
           <button
-            v-if="apiKeys && apiKeys.hasMore"
+            v-if="applications && applications.hasMore"
             class="button"
             :disabled="loadingMore"
             @click="loadMore"
@@ -211,7 +223,7 @@ library.add(faArrowDown, faSync, faTrash, faEye, faChartLine);
   middleware: "auth"
 })
 export default class ManageSettings extends Vue {
-  apiKeys: ApiKeys = emptyPagination;
+  applications: ApiKeys = emptyPagination;
   showDelete: ApiKey | null = null;
   loadingMore = false;
   loading = "";
@@ -220,8 +232,8 @@ export default class ManageSettings extends Vue {
   loggedInMembership = 3;
 
   private created() {
-    this.apiKeys = {
-      ...this.$store.getters["manage/apiKeys"](this.$route.params.team)
+    this.applications = {
+      ...this.$store.getters["manage/applications"](this.$route.params.team)
     };
     this.loggedInMembership = parseInt(
       this.$store.getters["manage/loggedInMembership"](this.$route.params.team)
@@ -232,8 +244,8 @@ export default class ManageSettings extends Vue {
     this.loading = "Loading your applications";
     this.$store
       .dispatch("manage/getApiKeys", { team: this.$route.params.team })
-      .then(apiKeys => {
-        this.apiKeys = { ...apiKeys };
+      .then(applications => {
+        this.applications = { ...applications };
       })
       .catch(error => {
         throw new Error(error);
@@ -250,11 +262,12 @@ export default class ManageSettings extends Vue {
     this.$store
       .dispatch("manage/getApiKeys", {
         team: this.$route.params.team,
-        start: this.$store.state.manage.apiKeys[this.$route.params.team].next
+        start: this.$store.state.manage.applications[this.$route.params.team]
+          .next
       })
       .then(() => {
-        this.apiKeys = {
-          ...this.$store.getters["manage/apiKeys"](this.$route.params.team)
+        this.applications = {
+          ...this.$store.getters["manage/applications"](this.$route.params.team)
         };
       })
       .catch(error => {
@@ -270,8 +283,8 @@ export default class ManageSettings extends Vue {
         team: this.$route.params.team,
         scopes: this.newScopes ? this.newScopes : undefined
       })
-      .then(apiKeys => {
-        this.apiKeys = { ...apiKeys };
+      .then(applications => {
+        this.applications = { ...applications };
       })
       .catch(error => {
         throw new Error(error);
@@ -290,8 +303,8 @@ export default class ManageSettings extends Vue {
         team: this.$route.params.team,
         id: key
       })
-      .then(apiKeys => {
-        this.apiKeys = { ...apiKeys };
+      .then(applications => {
+        this.applications = { ...applications };
       })
       .catch(error => {
         throw new Error(error);

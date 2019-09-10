@@ -15,13 +15,13 @@ export const state = (): RootState => ({
   invoice: {},
   sources: {},
   source: {},
-  apiKeys: {},
-  apiKey: {},
+  applications: {},
+  application: {},
   domains: {},
   domain: {},
   devWebhooks: {},
   devWebhook: {},
-  apiKeyLogs: {}
+  applicationLogs: {}
 });
 
 export const mutations: MutationTree<RootState> = {
@@ -117,39 +117,39 @@ export const mutations: MutationTree<RootState> = {
     currentSources[team][id] = { ...source };
     Vue.set(state, "source", currentSources);
   },
-  setApiKeys(state: RootState, { team, apiKeys, start, next }): void {
-    const currentApiKeys = { ...state.apiKeys };
+  setApiKeys(state: RootState, { team, applications, start, next }): void {
+    const currentApiKeys = { ...state.applications };
     currentApiKeys[team] = currentApiKeys[team] || emptyPagination;
     if (start) {
       currentApiKeys[team].data = [
         ...currentApiKeys[team].data,
-        ...apiKeys.data
+        ...applications.data
       ];
     } else {
-      currentApiKeys[team].data = apiKeys.data;
+      currentApiKeys[team].data = applications.data;
     }
     currentApiKeys[team].next = next;
-    Vue.set(state, "apiKeys", currentApiKeys);
+    Vue.set(state, "applications", currentApiKeys);
   },
-  setApiKey(state: RootState, { team, apiKey, id }): void {
-    const currentApiKeys = { ...state.apiKey };
+  setApiKey(state: RootState, { team, application, id }): void {
+    const currentApiKeys = { ...state.application };
     currentApiKeys[team] = currentApiKeys[team] || {};
-    currentApiKeys[team][id] = { ...apiKey };
-    Vue.set(state, "apiKey", currentApiKeys);
+    currentApiKeys[team][id] = { ...application };
+    Vue.set(state, "application", currentApiKeys);
   },
-  setApiKeyLogs(state: RootState, { team, apiKeyLogs, id, from }): void {
-    const currentApiKeyLogs = { ...state.apiKeyLogs };
+  setApiKeyLogs(state: RootState, { team, applicationLogs, id, from }): void {
+    const currentApiKeyLogs = { ...state.applicationLogs };
     currentApiKeyLogs[team] = currentApiKeyLogs[team] || {};
     currentApiKeyLogs[team][id] = currentApiKeyLogs[team][id] || emptyPagination;
     if (from) {
       currentApiKeyLogs[team][id].data = [
         ...currentApiKeyLogs[team][id].data,
-        ...apiKeyLogs.data
+        ...applicationLogs.data
       ];
     } else {
-      currentApiKeyLogs[team][id] = { ...apiKeyLogs };
+      currentApiKeyLogs[team][id] = { ...applicationLogs };
     }
-    Vue.set(state, "apiKeyLogs", currentApiKeyLogs);
+    Vue.set(state, "applicationLogs", currentApiKeyLogs);
   },
   setDomains(state: RootState, { team, domains, start, next }): void {
     const currentDomains = { ...state.domains };
@@ -211,8 +211,8 @@ export const mutations: MutationTree<RootState> = {
     currentState.source = {};
     currentState.recentEvents = {};
     currentState.pricingPlans = {};
-    currentState.apiKeys = {};
-    currentState.apiKey = {};
+    currentState.applications = {};
+    currentState.application = {};
     currentState.domains = {};
     currentState.domain = {};
     currentState.devWebhooks = {};
@@ -380,25 +380,25 @@ export const actions: ActionTree<RootState, RootState> = {
     return dispatch("getSource", { team: context.team, id: context.id });
   },
   async getApiKeys({ commit }, { team, start = 0 }) {
-    const apiKeys: any = (await this.$axios.get(
+    const applications: any = (await this.$axios.get(
       `/groups/${team}/api-keys?start=${start}`
     )).data;
-    commit("setApiKeys", { team, apiKeys, start, next: apiKeys.next });
-    return apiKeys;
+    commit("setApiKeys", { team, applications, start, next: applications.next });
+    return applications;
   },
   async getApiKey({ commit }, { team, id }) {
-    const apiKey: any = (await this.$axios.get(
+    const application: any = (await this.$axios.get(
       `/groups/${team}/api-keys/${id}`
     )).data;
-    commit("setApiKey", { team, apiKey, id });
-    return apiKey;
+    commit("setApiKey", { team, application, id });
+    return application;
   },
   async getApiKeyLogs({ commit }, { team, id, range, from }) {
-    const apiKeyLogs: any = (await this.$axios.get(
+    const applicationLogs: any = (await this.$axios.get(
       `/groups/${team}/api-keys/${id}/logs?range=${range}&from=${from}`
     )).data;
-    commit("setApiKeyLogs", { team, apiKeyLogs, range, id, from });
-    return apiKeyLogs;
+    commit("setApiKeyLogs", { team, applicationLogs, range, id, from });
+    return applicationLogs;
   },
   async createApiKey({ dispatch }, context) {
     const data = { ...context };
@@ -531,16 +531,16 @@ export const getters: GetterTree<RootState, RootState> = {
   sources: state => (team: string) => (state.sources)[team],
   source: state => (team: string, sourceId: string) =>
     state.source[team] && state.source[team][sourceId],
-  apiKeys: state => (team: string) => (state.apiKeys)[team],
-  apiKey: state => (team: string, apiKey: string) =>
-    state.apiKey[team] && state.apiKey[team][apiKey],
+  applications: state => (team: string) => (state.applications)[team],
+  application: state => (team: string, application: string) =>
+    state.application[team] && state.application[team][application],
   domains: state => (team: string) => (state.domains)[team],
   domain: state => (team: string, domain: string) =>
     state.domain[team] && state.domain[team][domain],
   webhooks: state => (team: string) => (state.devWebhooks)[team],
   webhook: state => (team: string, webhook: string) =>
     state.devWebhook[team] && state.devWebhook[team][webhook],
-  apiKeyLogs: state => (team: string, apiKeyLogs: string) =>
-    state.apiKeyLogs[team] && state.apiKeyLogs[team][apiKeyLogs],
+  applicationLogs: state => (team: string, applicationLogs: string) =>
+    state.applicationLogs[team] && state.applicationLogs[team][applicationLogs],
   group: state => (team: string) => (state.groups)[team]
 };

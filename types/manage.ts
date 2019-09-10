@@ -151,9 +151,9 @@ export interface RootState {
   invoice: SingleInvoiceKV;
   sources: SourcesKV;
   source: SingleSourceKV;
-  apiKeys: ApiKeysKV;
-  apiKey: SingleApiKeyKV;
-  apiKeyLogs: SingleApiKeyLogsKV;
+  applications: ApiKeysKV;
+  application: SingleApiKeyKV;
+  applicationLogs: SingleApiKeyLogsKV;
   domains: DomainsKV;
   domain: SingleDomainKV;
   devWebhooks: WebhooksKV;
