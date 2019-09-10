@@ -55,6 +55,7 @@
                   aria-label="View secret"
                   data-balloon-pos="up"
                   class="button button--type-icon"
+                  @click="getSecret(application)"
                 >
                   <font-awesome-icon class="icon" icon="key" fixed-width />
                 </button>
@@ -146,6 +147,28 @@
         </button>
       </Confirm>
     </transition>
+    <transition name="modal">
+      <Confirm v-if="showSecret" :on-close="() => (showSecret = null)">
+        <h2>Secret key</h2>
+        <div v-if="secret === '_loading'">
+          <Loading message="Loading your client secret key" />
+        </div>
+        <div v-else>
+          <code>{{ secret }}</code>
+          <button class="button text text--mt-2" @click="copy(secret)">
+            <font-awesome-icon class="icon icon--mr-1" icon="copy" />
+            <span v-if="copied">Copied</span>
+            <span v-else>Copy</span>
+          </button>
+          <button
+            class="button text text--mt-2"
+            @click="regenerate(showSecret)"
+          >
+            <span>Regenerate</span>
+          </button>
+        </div>
+      </Confirm>
+    </transition>
   </main>
 </template>
 
@@ -155,6 +178,7 @@ import { mapGetters } from "vuex";
 import { getAllCountries } from "countries-and-timezones";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import copy from "copy-to-clipboard";
 import {
   faArrowDown,
   faSync,
@@ -191,12 +215,15 @@ library.add(faArrowDown, faKey, faSync, faTrash, faPencilAlt, faChartLine);
 })
 export default class ManageSettings extends Vue {
   applications: Applications = emptyPagination;
+  showSecret: Application | null = null;
   showDelete: Application | null = null;
   loadingMore = false;
   loading = "";
   newName = "";
   scopes = scopes;
   loggedInMembership = 3;
+  copied = false;
+  secret = "";
 
   private created() {
     this.applications = {
@@ -222,6 +249,37 @@ export default class ManageSettings extends Vue {
 
   private mounted() {
     this.load();
+  }
+
+  private getSecret(key) {
+    this.secret = "_loading";
+    this.showSecret = key;
+    this.$store
+      .dispatch("manage/getApplicationSecret", {
+        team: this.$route.params.team,
+        id: key.id
+      })
+      .then(application => {
+        this.secret = application.value;
+      })
+      .catch(error => {
+        throw new Error(error);
+      });
+  }
+
+  private regenerate(key) {
+    this.secret = "_loading";
+    this.$store
+      .dispatch("manage/putApplicationSecret", {
+        team: this.$route.params.team,
+        id: key.id
+      })
+      .then(application => {
+        this.secret = application.value;
+      })
+      .catch(error => {
+        throw new Error(error);
+      });
   }
 
   private loadMore() {
@@ -277,6 +335,14 @@ export default class ManageSettings extends Vue {
         throw new Error(error);
       })
       .finally(() => (this.loading = ""));
+  }
+
+  private copy(text: string) {
+    copy(text);
+    this.copied = true;
+    setTimeout(() => {
+      this.copied = false;
+    }, 3000);
   }
 }
 </script>

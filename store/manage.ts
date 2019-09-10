@@ -393,6 +393,18 @@ export const actions: ActionTree<RootState, RootState> = {
     commit("setApplication", { team, application, id });
     return application;
   },
+  async getApplicationSecret({ commit }, { team, id }) {
+    const application: any = (await this.$axios.get(
+      `/groups/${team}/applications/${id}/secret`
+    )).data;
+    return application;
+  },
+  async putApplicationSecret({ commit }, { team, id }) {
+    const application: any = (await this.$axios.put(
+      `/groups/${team}/applications/${id}/secret`
+    )).data;
+    return application;
+  },
   async getApplicationLogs({ commit }, { team, id, range, from }) {
     const applicationLogs: any = (await this.$axios.get(
       `/groups/${team}/applications/${id}/logs?range=${range}&from=${from}`

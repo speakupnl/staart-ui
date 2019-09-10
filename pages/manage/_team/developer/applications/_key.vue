@@ -31,21 +31,23 @@
       </div>
       <div v-if="application">
         <h2>Use Application</h2>
-        <Input label="Client ID" :value="application.clientId" disabled />
-        <button class="button" @click="copy(application.jwtApplication)">
-          <font-awesome-icon class="icon icon--mr-1" icon="copy" />
-          <span v-if="copied">Copied</span>
-          <span v-else>Copy</span>
-        </button>
-        <button
-          type="button"
-          class="button button--color-danger"
-          style="margin-left: 0.5rem"
-          @click.prevent="showDelete = application"
-        >
-          <font-awesome-icon class="icon icon--mr-1" icon="trash" />
-          <span>Delete</span>
-        </button>
+        <div>
+          <Input label="Client ID" :value="application.clientId" disabled />
+          <button class="button" @click="copy(application.clientId)">
+            <font-awesome-icon class="icon icon--mr-1" icon="copy" />
+            <span>Copy</span>
+          </button>
+        </div>
+        <div class="text text--mt-1">
+          <Input label="Client Secret" :value="secret" disabled />
+          <button class="button" @click="copy(secret)">
+            <font-awesome-icon class="icon icon--mr-1" icon="copy" />
+            <span>Copy</span>
+          </button>
+          <button class="button" @click="regenerate">
+            <span>Regenerate</span>
+          </button>
+        </div>
         <div class="text text--mt-2">
           <h2>Edit Application</h2>
           <form
@@ -59,6 +61,15 @@
               @input="val => (application.name = val)"
             />
             <button class="button">Update Application</button>
+            <button
+              type="button"
+              class="button button--color-danger"
+              style="margin-left: 0.5rem"
+              @click.prevent="showDelete = application"
+            >
+              <font-awesome-icon class="icon icon--mr-1" icon="trash" />
+              <span>Delete application</span>
+            </button>
           </form>
         </div>
       </div>
@@ -145,11 +156,13 @@ library.add(
 export default class ManageSettings extends Vue {
   applications: Applications = emptyPagination;
   showDelete = false;
+  showSecret = false;
   loading = "";
   application: Application | undefined = undefined;
   scopes = scopes;
   copied = false;
   loggedInMembership = 3;
+  secret = "Loading...";
 
   private created() {
     this.application = {
@@ -177,6 +190,7 @@ export default class ManageSettings extends Vue {
         throw new Error(error);
       })
       .finally(() => (this.loading = ""));
+    this.getSecret();
   }
 
   private mounted() {
@@ -238,6 +252,36 @@ export default class ManageSettings extends Vue {
     setTimeout(() => {
       this.copied = false;
     }, 3000);
+  }
+
+  private getSecret() {
+    this.secret = "Loading...";
+    this.$store
+      .dispatch("manage/getApplicationSecret", {
+        team: this.$route.params.team,
+        id: this.$route.params.key
+      })
+      .then(application => {
+        this.secret = application.value;
+      })
+      .catch(error => {
+        throw new Error(error);
+      });
+  }
+
+  private regenerate() {
+    this.secret = "Loading...";
+    this.$store
+      .dispatch("manage/putApplicationSecret", {
+        team: this.$route.params.team,
+        id: this.$route.params.key
+      })
+      .then(application => {
+        this.secret = application.value;
+      })
+      .catch(error => {
+        throw new Error(error);
+      });
   }
 }
 </script>
