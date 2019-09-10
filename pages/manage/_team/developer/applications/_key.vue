@@ -54,6 +54,11 @@
             v-meta-ctrl-enter="updateApplication"
             @submit.prevent="updateApplication"
           >
+            <Checkbox
+              label="Application enabled"
+              :value="application.enabled"
+              @input="val => (application.enabled = val)"
+            />
             <Input
               label="Name"
               placeholder="Enter a name for this Application"
@@ -94,6 +99,31 @@
               help="Check this if this application will not perform actions for users"
               :value="application.serviceAccountsEnabled"
               @input="val => (application.serviceAccountsEnabled = val)"
+            />
+            <h3>OAuth settings</h3>
+            <ArrayList
+              label="Redirect URLs"
+              :value="application.redirectUris"
+              placeholder="Enter an authorized redirect URL"
+              @input="val => (application.redirectUris = val)"
+            />
+            <ArrayList
+              label="Web origins"
+              :value="application.webOrigins"
+              placeholder="Enter an authorized web origin for CORS"
+              @input="val => (application.webOrigins = val)"
+            />
+            <ArrayCheckList
+              label="Default client scopes"
+              :value="application.defaultClientScopes"
+              :options="clientScopesList"
+              @input="val => (application.defaultClientScopes = val)"
+            />
+            <ArrayCheckList
+              label="Optional client scopes"
+              :value="application.optionalClientScopes"
+              :options="clientScopesList"
+              @input="val => (application.optionalClientScopes = val)"
             />
             <button class="button">Update Application</button>
             <button
@@ -154,8 +184,9 @@ import TimeAgo from "@/components/TimeAgo.vue";
 import LargeMessage from "@/components/LargeMessage.vue";
 import Input from "@/components/form/Input.vue";
 import TextArea from "@/components/form/TextArea.vue";
-import CheckList from "@/components/form/CheckList.vue";
+import ArrayCheckList from "@/components/form/ArrayCheckList.vue";
 import CommaList from "@/components/form/CommaList.vue";
+import ArrayList from "@/components/form/ArrayList.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Select from "@/components/form/Select.vue";
 import { User } from "@/types/auth";
@@ -182,8 +213,9 @@ library.add(
     Input,
     TimeAgo,
     CommaList,
+    ArrayList,
     FontAwesomeIcon,
-    CheckList,
+    ArrayCheckList,
     Select,
     LargeMessage,
     Checkbox
@@ -200,6 +232,14 @@ export default class ManageSettings extends Vue {
   copied = false;
   loggedInMembership = 3;
   secret = "Loading...";
+  clientScopesList = {
+    role_list: { text: "role_list" },
+    profile: { text: "profile" },
+    email: { text: "email" },
+    address: { text: "address" },
+    phone: { text: "phone" },
+    offline_access: { text: "offline_access" }
+  };
 
   private created() {
     this.application = {
