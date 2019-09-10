@@ -37,9 +37,7 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Access</th>
-              <th>Restrictions</th>
-              <th>Expiry</th>
+              <th>Client ID</th>
               <th></th>
             </tr>
           </thead>
@@ -49,33 +47,17 @@
               :key="`${application.id}_${index}`"
             >
               <td>{{ application.name || "Unnamed application" }}</td>
-              <td v-if="application.scopes">
-                {{ application.scopes.split(",").length }} API{{
-                  application.scopes.split(",").length === 1 ? "" : "s"
-                }}
+              <td>
+                <code>{{ application.clientId }}</code>
               </td>
-              <td v-else>No APIs</td>
-              <td
-                v-if="
-                  application.ipRestrictions || application.referrerRestrictions
-                "
-              >
-                {{
-                  (application.ipRestrictions || "").split(",").length +
-                    (application.referrerRestrictions || "").split(",").length
-                }}
-                restriction{{
-                  (application.ipRestrictions || "").split(",").length +
-                    (application.referrerRestrictions || "").split(",")
-                      .length ===
-                  1
-                    ? ""
-                    : "s"
-                }}
-              </td>
-              <td v-else>No restrictions</td>
-              <td><TimeAgo :date="application.expiresAt" /></td>
               <td class="text text--align-right">
+                <button
+                  aria-label="View secret"
+                  data-balloon-pos="up"
+                  class="button button--type-icon"
+                >
+                  <font-awesome-icon class="icon" icon="key" fixed-width />
+                </button>
                 <router-link
                   :to="
                     `/manage/${$route.params.team}/developer/applications/${application.id}`
@@ -84,19 +66,9 @@
                   data-balloon-pos="up"
                   class="button button--type-icon"
                 >
-                  <font-awesome-icon class="icon" icon="eye" fixed-width />
-                </router-link>
-                <router-link
-                  :to="
-                    `/manage/${$route.params.team}/developer/logs?key=${application.id}`
-                  "
-                  aria-label="Logs"
-                  data-balloon-pos="up"
-                  class="button button--type-icon"
-                >
                   <font-awesome-icon
                     class="icon"
-                    icon="chart-line"
+                    icon="pencil-alt"
                     fixed-width
                   />
                 </router-link>
@@ -135,26 +107,22 @@
         </div>
       </div>
       <Loading v-else :message="loading" />
-      <div
-        v-if="loggedInMembership !== 3 && loggedInMembership !== 4"
-        class="text text--mt-2"
-      >
+      <div class="text text--mt-2">
         <h2>Create application</h2>
         <p>
           You can use applications to programmatically access Staart in your
           applications.
         </p>
         <form @submit.prevent="createApplication">
-          <CheckList
-            label="API restrictions"
-            :options="scopes"
-            :value="newScopes"
-            placeholder="Enter an IP address or CIDR, e.g., 192.168.1.1/42"
-            @input="val => (newScopes = val)"
+          <Input
+            label="Application name"
+            :value="newName"
+            placeholder="Enter a name for your application"
+            @input="val => (newName = val)"
           />
           <p class="text text--color-muted text--size-small">
-            You can add IP and referrer restrictions after creating the
-            application.
+            You can add more details, like redirect URLs and scopes, once you've
+            created an application.
           </p>
           <button class="button">Create application</button>
         </form>
@@ -191,14 +159,14 @@ import {
   faArrowDown,
   faSync,
   faTrash,
-  faEye,
-  faChartLine
+  faPencilAlt,
+  faChartLine,
+  faKey
 } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@/components/Loading.vue";
 import Confirm from "@/components/Confirm.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
 import LargeMessage from "@/components/LargeMessage.vue";
-import CheckList from "@/components/form/CheckList.vue";
 import Input from "@/components/form/Input.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Select from "@/components/form/Select.vue";
@@ -206,13 +174,12 @@ import { User } from "@/types/auth";
 import { Applications, emptyPagination, Application } from "@/types/manage";
 import translations from "@/locales/en";
 const scopes = translations.scopes;
-library.add(faArrowDown, faSync, faTrash, faEye, faChartLine);
+library.add(faArrowDown, faKey, faSync, faTrash, faPencilAlt, faChartLine);
 
 @Component({
   components: {
     Loading,
     Confirm,
-    CheckList,
     TimeAgo,
     Input,
     FontAwesomeIcon,
@@ -227,7 +194,7 @@ export default class ManageSettings extends Vue {
   showDelete: Application | null = null;
   loadingMore = false;
   loading = "";
-  newScopes = "orgRead";
+  newName = "";
   scopes = scopes;
   loggedInMembership = 3;
 
@@ -281,7 +248,7 @@ export default class ManageSettings extends Vue {
     this.$store
       .dispatch("manage/createApplication", {
         team: this.$route.params.team,
-        scopes: this.newScopes ? this.newScopes : undefined
+        name: this.newName ? this.newName : undefined
       })
       .then(applications => {
         this.applications = { ...applications };
@@ -291,7 +258,7 @@ export default class ManageSettings extends Vue {
       })
       .finally(() => {
         this.loading = "";
-        this.newScopes = "";
+        this.newName = "";
       });
   }
 

@@ -29,16 +29,15 @@
           </button>
         </div>
       </div>
-      <div v-if="application && application.jwtApiKey">
+      <div v-if="application">
         <h2>Use Application</h2>
-        <Input label="Application" :value="application.jwtApiKey" disabled />
-        <button class="button" @click="copy(application.jwtApiKey)">
+        <Input label="Client ID" :value="application.clientId" disabled />
+        <button class="button" @click="copy(application.jwtApplication)">
           <font-awesome-icon class="icon icon--mr-1" icon="copy" />
           <span v-if="copied">Copied</span>
           <span v-else>Copy</span>
         </button>
         <button
-          v-if="!readOnly"
           type="button"
           class="button button--color-danger"
           style="margin-left: 0.5rem"
@@ -50,38 +49,16 @@
         <div class="text text--mt-2">
           <h2>Edit Application</h2>
           <form
-            v-meta-ctrl-enter="() => (showUpdate = true)"
-            @submit.prevent="() => (showUpdate = true)"
+            v-meta-ctrl-enter="updateApplication"
+            @submit.prevent="updateApplication"
           >
             <Input
               label="Name"
               placeholder="Enter a name for this Application"
               :value="application.name"
-              :disabled="readOnly"
               @input="val => (application.name = val)"
             />
-            <CheckList
-              label="API restrictions"
-              :options="scopes"
-              :value="application.scopes"
-              :disabled="readOnly"
-              @input="val => (application.scopes = val)"
-            />
-            <CommaList
-              label="IP restrictions"
-              :value="application.ipRestrictions"
-              placeholder="Enter an IP address or CIDR, e.g., 192.168.1.1/42"
-              :disabled="readOnly"
-              @input="val => (application.ipRestrictions = val)"
-            />
-            <CommaList
-              label="Referrer restrictions"
-              :value="application.referrerRestrictions"
-              placeholder="Enter a host name without protocol, e.g., example.com"
-              :disabled="readOnly"
-              @input="val => (application.referrerRestrictions = val)"
-            />
-            <button v-if="!readOnly" class="button">Update Application</button>
+            <button class="button">Update Application</button>
           </form>
         </div>
       </div>
@@ -96,33 +73,12 @@
         </p>
         <button
           class="button button--color-danger button--state-cta"
-          @click="deleteApiKey(showDelete.id)"
+          @click="deleteApplication(showDelete.id)"
         >
           Yes, delete Application
         </button>
         <button type="button" class="button" @click="showDelete = false">
           No, don't delete
-        </button>
-      </Confirm>
-    </transition>
-    <transition name="modal">
-      <Confirm v-if="showUpdate" :on-close="() => (showUpdate = false)">
-        <h2>
-          Are you sure you want to update and regenerate this Application?
-        </h2>
-        <p>
-          Updating your Application will generate a new Application, so you'll
-          have to update it wherever you're using it.
-        </p>
-        <p>The current Application will stop working instantly.</p>
-        <button
-          class="button button--color-primary button--state-cta"
-          @click="updateApiKey"
-        >
-          Yes, regenerate Application
-        </button>
-        <button type="button" class="button" @click="showUpdate = false">
-          No, don't update
         </button>
       </Confirm>
     </transition>
@@ -156,7 +112,7 @@ import CommaList from "@/components/form/CommaList.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Select from "@/components/form/Select.vue";
 import { User } from "@/types/auth";
-import { ApiKeys, emptyPagination, ApiKey } from "@/types/manage";
+import { Applications, emptyPagination, Application } from "@/types/manage";
 import translations from "@/locales/en";
 import { removeNulls } from "@/helpers/crud";
 const scopes = translations.scopes;
@@ -187,11 +143,10 @@ library.add(
   middleware: "auth"
 })
 export default class ManageSettings extends Vue {
-  applications: ApiKeys = emptyPagination;
+  applications: Applications = emptyPagination;
   showDelete = false;
-  showUpdate = false;
   loading = "";
-  application: ApiKey | undefined = undefined;
+  application: Application | undefined = undefined;
   scopes = scopes;
   copied = false;
   loggedInMembership = 3;
@@ -208,14 +163,10 @@ export default class ManageSettings extends Vue {
     );
   }
 
-  get readOnly() {
-    return this.loggedInMembership === 3 || this.loggedInMembership === 4;
-  }
-
   private load() {
     this.loading = "Loading your Applications";
     this.$store
-      .dispatch("manage/getApiKey", {
+      .dispatch("manage/getApplication", {
         team: this.$route.params.team,
         id: this.$route.params.key
       })
@@ -232,17 +183,20 @@ export default class ManageSettings extends Vue {
     this.load();
   }
 
-  private updateApiKey() {
-    this.showUpdate = false;
+  private updateApplication() {
     this.loading = "Updating your Application";
     const application = { ...this.application };
     if (application) {
-      ["jwtApiKey", "groupId", "expiresAt", "createdAt", "updatedAt"].forEach(
-        k => delete application[k]
-      );
+      [
+        "jwtApplication",
+        "groupId",
+        "expiresAt",
+        "createdAt",
+        "updatedAt"
+      ].forEach(k => delete application[k]);
     }
     this.$store
-      .dispatch("manage/updateApiKey", {
+      .dispatch("manage/updateApplication", {
         team: this.$route.params.team,
         id: this.$route.params.key,
         ...application
@@ -258,17 +212,19 @@ export default class ManageSettings extends Vue {
       });
   }
 
-  private deleteApiKey(key: number) {
+  private deleteApplication(key: number) {
     this.showDelete = false;
     this.loading = "Deleting your Application";
     this.$store
-      .dispatch("manage/deleteApiKey", {
+      .dispatch("manage/deleteApplication", {
         team: this.$route.params.team,
         id: key
       })
       .then(applications => {
         this.applications = { ...applications };
-        this.$router.push(`/manage/${this.$route.params.team}/applications`);
+        this.$router.push(
+          `/manage/${this.$route.params.team}/developer/applications`
+        );
       })
       .catch(error => {
         throw new Error(error);
