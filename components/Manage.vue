@@ -7,7 +7,7 @@
       <nav>
         <nuxt-link
           class="item item--type-parent"
-          :to="`/manage/${$route.params.team}/developer/api-keys`"
+          :to="`/manage/${$route.params.team}/developer/applications`"
         >
           <font-awesome-icon class="nav-icon" icon="code" fixed-width />
           <span>Developer</span>
@@ -15,7 +15,7 @@
         <nav v-if="$route.path.includes('/developer/')" class="sub-nav">
           <nuxt-link
             class="sub-item"
-            :to="`/manage/${$route.params.team}/developer/api-keys`"
+            :to="`/manage/${$route.params.team}/developer/applications`"
           >
             <span>Applications</span>
           </nuxt-link>

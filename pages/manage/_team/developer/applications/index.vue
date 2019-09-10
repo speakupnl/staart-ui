@@ -144,7 +144,7 @@
           You can use applications to programmatically access Staart in your
           applications.
         </p>
-        <form @submit.prevent="createApiKey">
+        <form @submit.prevent="createApplication">
           <CheckList
             label="API restrictions"
             :options="scopes"
@@ -169,7 +169,7 @@
         </p>
         <button
           class="button button--color-danger button--state-cta"
-          @click="deleteApiKey(showDelete.id)"
+          @click="deleteApplication(showDelete.id)"
         >
           Yes, delete application
         </button>
@@ -203,7 +203,7 @@ import Input from "@/components/form/Input.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Select from "@/components/form/Select.vue";
 import { User } from "@/types/auth";
-import { ApiKeys, emptyPagination, ApiKey } from "@/types/manage";
+import { Applications, emptyPagination, Application } from "@/types/manage";
 import translations from "@/locales/en";
 const scopes = translations.scopes;
 library.add(faArrowDown, faSync, faTrash, faEye, faChartLine);
@@ -223,8 +223,8 @@ library.add(faArrowDown, faSync, faTrash, faEye, faChartLine);
   middleware: "auth"
 })
 export default class ManageSettings extends Vue {
-  applications: ApiKeys = emptyPagination;
-  showDelete: ApiKey | null = null;
+  applications: Applications = emptyPagination;
+  showDelete: Application | null = null;
   loadingMore = false;
   loading = "";
   newScopes = "orgRead";
@@ -243,7 +243,7 @@ export default class ManageSettings extends Vue {
   private load() {
     this.loading = "Loading your applications";
     this.$store
-      .dispatch("manage/getApiKeys", { team: this.$route.params.team })
+      .dispatch("manage/getApplications", { team: this.$route.params.team })
       .then(applications => {
         this.applications = { ...applications };
       })
@@ -260,7 +260,7 @@ export default class ManageSettings extends Vue {
   private loadMore() {
     this.loadingMore = true;
     this.$store
-      .dispatch("manage/getApiKeys", {
+      .dispatch("manage/getApplications", {
         team: this.$route.params.team,
         start: this.$store.state.manage.applications[this.$route.params.team]
           .next
@@ -276,10 +276,10 @@ export default class ManageSettings extends Vue {
       .finally(() => (this.loadingMore = false));
   }
 
-  private createApiKey() {
+  private createApplication() {
     this.loading = "Creating your application";
     this.$store
-      .dispatch("manage/createApiKey", {
+      .dispatch("manage/createApplication", {
         team: this.$route.params.team,
         scopes: this.newScopes ? this.newScopes : undefined
       })
@@ -295,11 +295,11 @@ export default class ManageSettings extends Vue {
       });
   }
 
-  private deleteApiKey(key: number) {
+  private deleteApplication(key: number) {
     this.showDelete = null;
     this.loading = "Deleting your application";
     this.$store
-      .dispatch("manage/deleteApiKey", {
+      .dispatch("manage/deleteApplication", {
         team: this.$route.params.team,
         id: key
       })

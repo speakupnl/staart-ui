@@ -15,14 +15,14 @@ export interface Group extends IdRow {
 export interface Membership extends IdRow {
   group: Group;
 }
-export interface ApiKey extends IdRow {
+export interface Application extends IdRow {
   name?: string;
-  jwtApiKey: string;
+  jwtApplication: string;
   scopes: string;
   ipRestrictions?: string;
   referrerRestrictions?: string;
 }
-export type ApiKeyLogs = any;
+export type ApplicationLogs = any;
 export interface Domain extends Row {
   domain: string;
   verificationCode: string;
@@ -48,8 +48,8 @@ export interface Invoices extends Paginated {
 export interface Sources extends Paginated {
   data: sources.ISource[];
 }
-export interface ApiKeys extends Paginated {
-  data: ApiKey[];
+export interface Applications extends Paginated {
+  data: Application[];
 }
 export interface Domains extends Paginated {
   data: Domain[];
@@ -90,8 +90,8 @@ export interface InvoicesKV {
 export interface SourcesKV {
   [index: string]: Sources;
 }
-export interface ApiKeysKV {
-  [index: string]: ApiKeys;
+export interface ApplicationsKV {
+  [index: string]: Applications;
 }
 export interface DomainsKV {
   [index: string]: Domains;
@@ -115,14 +115,14 @@ export interface SingleSourceKV {
     [index: string]: sources.ISource;
   };
 }
-export interface SingleApiKeyKV {
+export interface SingleApplicationKV {
   [index: string]: {
-    [index: string]: ApiKey;
+    [index: string]: Application;
   };
 }
-export interface SingleApiKeyLogsKV {
+export interface SingleApplicationLogsKV {
   [index: string]: {
-    [index: string]: ApiKeyLogs;
+    [index: string]: ApplicationLogs;
   };
 }
 export interface SingleDomainKV {
@@ -151,9 +151,9 @@ export interface RootState {
   invoice: SingleInvoiceKV;
   sources: SourcesKV;
   source: SingleSourceKV;
-  applications: ApiKeysKV;
-  application: SingleApiKeyKV;
-  applicationLogs: SingleApiKeyLogsKV;
+  applications: ApplicationsKV;
+  application: SingleApplicationKV;
+  applicationLogs: SingleApplicationLogsKV;
   domains: DomainsKV;
   domain: SingleDomainKV;
   devWebhooks: WebhooksKV;
