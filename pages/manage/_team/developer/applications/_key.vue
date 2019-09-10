@@ -60,6 +60,41 @@
               :value="application.name"
               @input="val => (application.name = val)"
             />
+            <TextArea
+              label="Description"
+              placeholder="Enter details about your application"
+              :value="getAttribute('description')"
+              @input="val => setAttribute('description', val)"
+            />
+            <div class="row text text--mb-1">
+              <div
+                class="column column--type-shrink text text--align-center ai"
+              >
+                <img
+                  class="app-icon"
+                  alt="App icon preview"
+                  :src="getAttribute('icon') || '/apple-touch-icon.png'"
+                />
+              </div>
+              <Input
+                label="Icon"
+                placeholder="Enter a URL for your application icon"
+                :value="getAttribute('icon')"
+                @input="val => setAttribute('icon', val)"
+              />
+            </div>
+            <Input
+              label="Application URL"
+              placeholder="Enter the URL for your application"
+              :value="getAttribute('url')"
+              @input="val => setAttribute('url', val)"
+            />
+            <Checkbox
+              label="Service accounts enabled"
+              help="Check this if this application will not perform actions for users"
+              :value="application.serviceAccountsEnabled"
+              @input="val => (application.serviceAccountsEnabled = val)"
+            />
             <button class="button">Update Application</button>
             <button
               type="button"
@@ -118,6 +153,7 @@ import Confirm from "@/components/Confirm.vue";
 import TimeAgo from "@/components/TimeAgo.vue";
 import LargeMessage from "@/components/LargeMessage.vue";
 import Input from "@/components/form/Input.vue";
+import TextArea from "@/components/form/TextArea.vue";
 import CheckList from "@/components/form/CheckList.vue";
 import CommaList from "@/components/form/CommaList.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
@@ -142,6 +178,7 @@ library.add(
   components: {
     Loading,
     Confirm,
+    TextArea,
     Input,
     TimeAgo,
     CommaList,
@@ -283,7 +320,35 @@ export default class ManageSettings extends Vue {
         throw new Error(error);
       });
   }
+
+  setAttribute(key: string, value: string) {
+    if (!this.application) return;
+    const application = JSON.parse(
+      JSON.stringify(this.application)
+    ) as Application;
+    application.attributes = application.attributes || {};
+    application.attributes[key] = value;
+    this.application = { ...application };
+  }
+
+  getAttribute(key: string) {
+    if (!this.application) return;
+    const application = { ...this.application };
+    application.attributes = application.attributes || {};
+    return application.attributes[key];
+  }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.app-icon {
+  box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 0.2rem;
+}
+.ai {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+</style>

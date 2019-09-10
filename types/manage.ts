@@ -21,6 +21,9 @@ export interface Application extends IdRow {
   scopes: string;
   ipRestrictions?: string;
   referrerRestrictions?: string;
+  attributes?: {
+    [index: string]: (string | number | boolean);
+  }
 }
 export type ApplicationLogs = any;
 export interface Domain extends Row {
