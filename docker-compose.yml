@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+  # Caddy webserver
+  caddy:
+    build:
+      context: .
+    ports:
+      - "801:2015"
+
+    environment:
+      AXIOS_BASE_URL: "http://127.0.0.1:802/v1/"
+
+    volumes:
+      - "./Caddyfile:/etc/Caddyfile:ro"
