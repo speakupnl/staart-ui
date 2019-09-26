@@ -10,6 +10,7 @@
     "build-nuxt": "nuxt-ts build",
     "start": "nuxt-ts start",
     "generate": "nuxt-ts generate",
+    "generate:caddy": "nuxt-ts generate --config-file caddy.config.ts",
     "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore . --fix",
     "precommit": "npm run lint",
     "snyk-protect": "snyk protect",

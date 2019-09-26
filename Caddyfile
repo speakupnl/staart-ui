@@ -1,0 +1,14 @@
+0.0.0.0
+
+log stdout
+
+gzip
+
+cors
+
+index index.html
+
+templates {
+  ext     .js
+  between @{{ }}
+}
