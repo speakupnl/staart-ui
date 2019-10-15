@@ -9,7 +9,6 @@ cors
 rewrite  {
   to {path} {path}/  /200.html
 }
-
 index index.html
 
 templates {

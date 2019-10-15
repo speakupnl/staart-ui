@@ -11,7 +11,7 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Settings extends Vue {
   private created() {
     this.$router.replace(
-      `/manage/${this.$route.params.team}/developer/api-keys`
+      `/manage/${this.$route.params.team}/developer/applications`
     );
   }
 }

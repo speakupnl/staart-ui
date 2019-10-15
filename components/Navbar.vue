@@ -19,7 +19,7 @@
         <span>
           <button
             class="item item--type-less"
-            to="/settings/account"
+            to="/users/me"
             aria-label="Help"
             data-balloon-pos="down"
             aria-controls="help"
@@ -40,9 +40,7 @@
               class="dropdown"
             >
               <button class="item" @click="feedback">Feedback</button>
-              <nuxt-link class="item" to="/settings/account"
-                >Help Center</nuxt-link
-              >
+              <nuxt-link class="item" to="/users/me">Help Center</nuxt-link>
               <button class="item" onclick="window.agastya.open()">
                 Accessibility
               </button>

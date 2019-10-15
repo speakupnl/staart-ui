@@ -422,7 +422,8 @@ code {
 
 }
 
-.form-group input, .input {
+.form-group input, .input,
+.form-group textarea, .textarea {
   font: inherit;
   padding: 0.75rem;
   display: block;

@@ -5,7 +5,9 @@
   >
     <div
       class="avatar"
-      :style="`background-image: url('${team.profilePicture}')`"
+      :style="
+        `background-image: url('https://ui-avatars.com/api/?name=${team.name}')`
+      "
     />
     <div>
       <span>{{ team.name }}</span>

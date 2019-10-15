@@ -30,8 +30,8 @@
             <Select
               label="API key"
               :options="apiKeyOptions"
-              :value="activeApiKey"
-              @input="val => (activeApiKey = val)"
+              :value="activeApplication"
+              @input="val => (activeApplication = val)"
             />
             <Select
               label="Time filter"
@@ -184,7 +184,7 @@ import Input from "@/components/form/Input.vue";
 import Checkbox from "@/components/form/Checkbox.vue";
 import Select from "@/components/form/Select.vue";
 import { User } from "@/types/auth";
-import { ApiKeys, emptyPagination, ApiKey } from "@/types/manage";
+import { Applications, emptyPagination, Application } from "@/types/manage";
 import translations from "@/locales/en";
 const scopes = translations.scopes;
 library.add(faArrowDown, faSync, faCloudDownloadAlt);
@@ -205,14 +205,14 @@ library.add(faArrowDown, faSync, faCloudDownloadAlt);
   middleware: "auth"
 })
 export default class ManageSettings extends Vue {
-  apiKeys: ApiKeys = emptyPagination;
+  apiKeys: Applications = emptyPagination;
   data: any = null;
-  showDelete: ApiKey | null = null;
+  showDelete: Application | null = null;
   loadingMore = false;
   loading = "";
   newScopes = "orgRead";
   scopes = scopes;
-  activeApiKey = 0;
+  activeApplication = 0;
   apiKeyOptions: any = {};
   timeFilter = "24h";
   from = 0;
@@ -235,14 +235,15 @@ export default class ManageSettings extends Vue {
         apiKeyOptions[apiKey.id] = apiKey.name || apiKey.id;
       });
       this.apiKeyOptions = apiKeyOptions;
-      if (this.apiKeys.data.length) this.activeApiKey = this.apiKeys.data[0].id;
+      if (this.apiKeys.data.length)
+        this.activeApplication = this.apiKeys.data[0].id;
     }
     const tryNum = parseInt(this.$route.query.key as string);
-    if (!isNaN(tryNum)) this.activeApiKey = tryNum;
+    if (!isNaN(tryNum)) this.activeApplication = tryNum;
     this.data = {
       ...this.$store.getters["manage/apiKeyLogs"](
         this.$route.params.team,
-        this.activeApiKey
+        this.activeApplication
       )
     };
   }
@@ -250,7 +251,7 @@ export default class ManageSettings extends Vue {
   private load() {
     this.loading = "Loading your API keys";
     this.$store
-      .dispatch("manage/getApiKeys", { team: this.$route.params.team })
+      .dispatch("manage/getApplications", { team: this.$route.params.team })
       .then(apiKeys => {
         this.apiKeys = { ...apiKeys };
         const apiKeyOptions = {};
@@ -263,7 +264,8 @@ export default class ManageSettings extends Vue {
         this.loading = "";
       })
       .then(apiKeyId => {
-        if (apiKeyId && !this.activeApiKey) this.activeApiKey = apiKeyId;
+        if (apiKeyId && !this.activeApplication)
+          this.activeApplication = apiKeyId;
         return this.loadData();
       })
       .catch(error => {
@@ -277,12 +279,12 @@ export default class ManageSettings extends Vue {
 
   private loadData() {
     this.from = 0;
-    if (!this.activeApiKey) return;
+    if (!this.activeApplication) return;
     this.loading = "Loading your API logs";
     this.$store
-      .dispatch("manage/getApiKeyLogs", {
+      .dispatch("manage/getApplicationLogs", {
         team: this.$route.params.team,
-        id: this.activeApiKey,
+        id: this.activeApplication,
         range: this.timeFilter,
         from: this.from
       })
@@ -302,9 +304,9 @@ export default class ManageSettings extends Vue {
     }
     this.loadingMore = true;
     this.$store
-      .dispatch("manage/getApiKeyLogs", {
+      .dispatch("manage/getApplicationLogs", {
         team: this.$route.params.team,
-        id: this.activeApiKey,
+        id: this.activeApplication,
         range: this.timeFilter,
         from: this.from
       })
@@ -312,7 +314,7 @@ export default class ManageSettings extends Vue {
         this.data = {
           ...this.$store.getters["manage/apiKeyLogs"](
             this.$route.params.team,
-            this.activeApiKey
+            this.activeApplication
           )
         };
       })
