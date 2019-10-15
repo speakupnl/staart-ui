@@ -1,0 +1,18 @@
+0.0.0.0
+
+log stdout
+
+gzip
+
+cors
+
+rewrite  {
+  to {path} {path}/  /200.html
+}
+
+index index.html
+
+templates {
+  ext     .js
+  between @{{ }}
+}
