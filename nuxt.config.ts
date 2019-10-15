@@ -6,7 +6,7 @@ const config: Configuration = {
     dir: "public"
   },
   head: {
-    title: "Speakup Developers",
+    title: "Speakup Developer Portal",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
