@@ -51,6 +51,7 @@
     "@nuxtjs/eslint-config": "^1.1.2",
     "@nuxtjs/markdownit": "^1.2.6",
     "@nuxtjs/sitemap": "^1.3.0",
+    "@staart/ui": "^1.1.3",
     "@types/downloadjs": "^1.4.1",
     "@types/hashids": "^1.0.30",
     "@types/stripe": "^6.31.23",
